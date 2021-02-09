@@ -131,5 +131,5 @@ dmypy.json
 # Exclude idea IDE files
 .idea/
 
-# Exclude settings.py for secret key safety
-DACOS/settings.py
+# Exclude .env for secret key safety
+DACOS/.env

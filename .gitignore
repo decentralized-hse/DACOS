@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Exclude idea IDE files
+.idea/
+
+# Exclude settings.py for secret key safety
+DACOS/settings.py

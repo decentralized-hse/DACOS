@@ -133,3 +133,6 @@ dmypy.json
 
 # Exclude .env for secret key safety
 DACOS/.env
+
+# Exclude all migrations
+server/migrations/*

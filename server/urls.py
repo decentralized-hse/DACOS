@@ -1,7 +1,9 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
-from django.conf.urls import url
 
 urlpatterns = [
-    path('register', views.register_user)
+    path('register', views.register_user),
+    path('delete_ticket', views.delete_ticket),
+    path('add_ticket', views.register_ticket),
+    path('get_tickets', views.get_all_tickets)
 ]

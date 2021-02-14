@@ -12,3 +12,9 @@ class PublicUser(models.Model):
 class PrivateUser(models.Model):
     username = models.CharField('Ник пользователя', max_length=50)
     password_hash = models.CharField('Хэш пароля пользователя', max_length=77)
+
+
+class Ticket(models.Model):
+    usernameRSA = models.CharField(max_length=300)
+    usernameAES = models.CharField(max_length=300)
+

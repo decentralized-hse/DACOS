@@ -1,6 +1,6 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseBadRequest
 from server.models import PrivateUser
+from django.http import HttpResponse,HttpResponseNotAllowed,HttpResponseBadRequest
+from .models import PublicUser
 
 
 """
@@ -27,6 +27,19 @@ def can_register_private(request):
         return HttpResponse('OK')
     else:
         return HttpResponseBadRequest('bad request format')
+
+
+def can_register_public(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed('Invalid request type')
+    if 'username' in request.POST  and 'public_rsa_n' in request.POST and'public_rsa_e' in request.POST and 'g_in_big_power' in request.POST:
+        if len(request.POST.get('username')) > 50:
+            return HttpResponseBadRequest('username is too long - 50 symbols is limit')
+        if check_username(request.POST.get('username'), PublicUser):
+            return HttpResponseBadRequest('username is already in use')
+        return HttpResponse('OK')
+    else:
+        return HttpResponseBadRequest('Not enough data')
 
 
 """

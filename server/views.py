@@ -1,5 +1,5 @@
 from argon2 import PasswordHasher
-from server.models import PrivateUser
+from server.models import PrivateUser, Block
 from django.http import HttpResponse, HttpResponseNotAllowed,HttpResponseBadRequest, JsonResponse
 from .models import PublicUser, Ticket
 import json as simplejson
@@ -95,4 +95,15 @@ def delete_ticket(request):
             return HttpResponseBadRequest('there is no such user')
     return HttpResponseNotAllowed('Invalid request type')
 
+
+def read_message(request):
+    if request.method == 'GET' and 'block_number' in request.GET and request.GET['block_number'].isdigit():
+        blocks = list(Block.objects.all().values_list('block', flat=True))
+        print(blocks)
+        block_number = int(request.GET['block_number'])
+        if block_number >= len(blocks):
+            return HttpResponseBadRequest('Wrong data')
+        return JsonResponse(blocks[block_number:], safe=False)
+    else:
+        return HttpResponseBadRequest('Not enough data')
 

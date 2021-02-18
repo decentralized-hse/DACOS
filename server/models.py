@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
+
 class PublicUser(models.Model):
     username = models.CharField(max_length=50)
     cell_id = models.IntegerField()
@@ -17,6 +18,7 @@ class PrivateUser(models.Model):
 class Ticket(models.Model):
     usernameRSA = models.CharField(max_length=300)
     usernameAES = models.CharField(max_length=300)
+
 
 class Block(models.Model):
     block = ArrayField(models.CharField(max_length=500), size = 32)

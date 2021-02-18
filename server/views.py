@@ -94,3 +94,5 @@ def delete_ticket(request):
         except:
             return HttpResponseBadRequest('there is no such user')
     return HttpResponseNotAllowed('Invalid request type')
+
+

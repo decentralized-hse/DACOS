@@ -1,7 +1,6 @@
 from argon2 import PasswordHasher
-from server.models import PrivateUser, Block
 from django.http import HttpResponse, HttpResponseNotAllowed,HttpResponseBadRequest, JsonResponse
-from .models import PublicUser, Ticket
+from .models import PublicUser, Ticket, PrivateUser, Block
 import json as simplejson
 
 
@@ -58,7 +57,7 @@ def check_username(username, usertype):
     return False
 
 
-def add_ticket(username,password):
+def add_ticket(username, password):
     new_ticket = Ticket(usernameRSA=username, usernameAES=password)
     new_ticket.save()
 
@@ -94,6 +93,23 @@ def delete_ticket(request):
         except:
             return HttpResponseBadRequest('there is no such user')
     return HttpResponseNotAllowed('Invalid request type')
+
+
+def write_log(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed('Invalid request type')
+    if 'message' in request.POST:
+        message = request.POST.get('message')
+        log = Block.objects.latest('block').block
+        id = Block.objects.latest('block').id
+        if len(log) == 32:
+            Block(block=[message,]).save()
+        else:
+            log.append(message)
+            Block.objects.filter(id=id).update(block=log)
+        return HttpResponse('OK')
+    else:
+        return HttpResponseBadRequest('Not enough data')
 
 
 def read_message(request):

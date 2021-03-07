@@ -31,27 +31,27 @@ import java.util.Map;
  */
 public class LoginDataSource {
 
+    String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    private void setUsername(String username) {
+        this.username = username;
+    }
+
     public Result<LoggedInUser> login(String username, String password) {
 
         try {
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.GetContext());
             String url = "http://10.0.2.2:8000/register";
-            JSONObject json = new JSONObject();
-            Map<String, String> jsonParams = new HashMap<String, String>();
-            json.put("username","ded");
-            json.put("password","password");
-            json.put("public_rsa_n","23");
-            json.put("public_rsa_e","32");
-            json.put("g_in_big_power","44");
-            final String jsonRequest = json.toString();
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>()
                     {
                         @Override
                         public void onResponse(String response) {
-
                             Log.d("onResponse", response);
-
                         }
                     },
                     new Response.ErrorListener()
@@ -63,7 +63,7 @@ public class LoginDataSource {
                             String errorMsg = "";
                             if(response != null && response.data != null){
                                 String errorString = new String(response.data);
-                                Log.i("log error", errorString);
+                                Toast.makeText(LoginActivity.GetContext(), errorString,Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -73,8 +73,8 @@ public class LoginDataSource {
                 {
 
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("username","ded");
-                    params.put("password","password");
+                    params.put("username",username);
+                    params.put("password",password);
                     params.put("public_rsa_n","23");
                     params.put("public_rsa_e","32");
                     params.put("g_in_big_power","44");
@@ -84,11 +84,9 @@ public class LoginDataSource {
                 }
 
             };
-
-
             // Add the realibility on the connection.
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1.0f));
-// Add the request to the RequestQueue.
+            // Add the request to the RequestQueue.
             queue.add(stringRequest);
             queue.wait();
             LoggedInUser fakeUser = new LoggedInUser(java.util.UUID.randomUUID().toString(), "start");

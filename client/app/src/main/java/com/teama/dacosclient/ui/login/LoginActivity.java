@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaCodec;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.teama.dacosclient.ChatsActivity;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.ui.login.LoginViewModel;
 import com.teama.dacosclient.ui.login.LoginViewModelFactory;
@@ -84,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK);
 
                 //Complete and destroy login activity once successful
-                finish();
+                //finish();
             }
         });
 
@@ -128,8 +130,11 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
 
-
+                Intent intent = new Intent(LoginActivity.this, ChatsActivity.class);
+                intent.putExtra("username", usernameEditText.getText().toString());
+                startActivity(intent);
             }
+
         });
     }
 

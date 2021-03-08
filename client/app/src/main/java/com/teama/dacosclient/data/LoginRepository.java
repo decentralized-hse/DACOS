@@ -1,6 +1,15 @@
 package com.teama.dacosclient.data;
 
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.teama.dacosclient.data.model.User;
+import com.teama.dacosclient.ui.login.LoginActivity;
+
+import java.lang.reflect.Type;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -19,6 +28,12 @@ public class LoginRepository {
     // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
+        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("user", null);
+        Type type = new TypeToken<User>() {}.getType();
+        user = gson.fromJson(json, type);
+        User.setInstance(user);
     }
 
     public static LoginRepository getInstance() {
@@ -39,12 +54,15 @@ public class LoginRepository {
 
     private void setLoggedInUser(User user) {
         this.user = user;
-        // If user credentials will be cached in local storage, it is recommended it be encrypted
-        // @see https://developer.android.com/training/articles/keystore
+        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(User.getInstance());
+        editor.putString("user", json);
+        editor.apply();
     }
 
     public Result<User> login(String username, String password) {
-        // handle login
         Result<User> result = dataSource.login(username, password);
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<User>) result).getData());

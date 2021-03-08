@@ -1,6 +1,7 @@
 package com.teama.dacosclient.ui.login;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.teama.dacosclient.ChatsActivity;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.LoginRepository;
 import com.teama.dacosclient.data.Result;
@@ -23,6 +25,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         context = getApplicationContext();
+        LoginRepository loginRepository = LoginRepository.getInstance();
+        if (loginRepository.isLoggedIn())
+        {
+            Intent intent = new Intent(this, ChatsActivity.class);
+            finish();
+            this.startActivity(intent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -31,13 +40,14 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(LoginActivity.getContext(), "error", Toast.LENGTH_LONG).show();
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
-                Result<User> result = LoginRepository.getInstance()
+                Result<User> result = loginRepository
                         .login(usernameEditText.getText().toString(),
                                 passwordEditText.getText().toString());
                 loadingProgressBar.setVisibility(View.INVISIBLE);

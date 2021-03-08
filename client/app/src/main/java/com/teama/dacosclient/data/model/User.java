@@ -29,10 +29,12 @@ public class User {
         return instance;
     }
 
-    public static void generateInstance(String username, String password) {
-        if (instance == null)
-            instance = new User(username, password);
+    public static void setInstance(String username, String password) {
+        instance = new User(username, password);
+    }
 
+    public static void setInstance(User user) {
+        instance = user;
     }
 
     public String getUsername() {

@@ -38,7 +38,7 @@ public class LoginDataSource {
     }
 
     public Result<User> login(String username, String password) {
-    User.generateInstance(username, password);
+    User.setInstance(username, password);
     User user = User.getInstance();
         try {
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
@@ -49,9 +49,9 @@ public class LoginDataSource {
                     {
                         @Override
                         public void onResponse(String response) {
-                                Log.e("nice","+");
                                 Intent intent = new Intent(LoginActivity.getContext(), ChatsActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                ((Activity)LoginActivity.getContext()).finish();
                                 LoginActivity.getContext().startActivity(intent);
 
                         }
@@ -67,7 +67,6 @@ public class LoginDataSource {
                                 String errorString = new String(response.data);
                                 Toast.makeText(LoginActivity.getContext(), errorString,Toast.LENGTH_LONG).show();
                             }
-                            Log.e("bad","-");
                         }
                     }
             ) {

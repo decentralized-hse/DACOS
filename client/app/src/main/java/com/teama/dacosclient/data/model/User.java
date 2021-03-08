@@ -1,7 +1,22 @@
 package com.teama.dacosclient.data.model;
 
+import android.security.keystore.KeyProperties;
+import android.util.Log;
+
 import com.teama.dacosclient.data.LoginDataSource;
 import com.teama.dacosclient.data.LoginRepository;
+
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
@@ -10,29 +25,48 @@ public class User {
 
     private String username;
     private String password;
-    private String rsaN;
+    private String publicRsaN;
     private String rsaE;
     private String gInBigPower;
+    private String privateRSAN;
+    private RSAPrivateKey rsaPrivateKey;
+    private RSAPublicKey rsaPublicKey;
 
     private static User instance;
 
 
     private User(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.rsaN = "1";
-        this.rsaE = "2";
-        this.gInBigPower = "3";
+        try {
+            KeyPairGenerator generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA);
+            generator.initialize(2048);
+            KeyPair keyPair = generator.genKeyPair();
+            RSAPublicKey publicKey = (java.security.interfaces.RSAPublicKey) keyPair.getPublic();
+            RSAPrivateKey privateKey = (java.security.interfaces.RSAPrivateKey) keyPair.getPrivate();
+            this.username = username;
+            this.password = password;
+            this.publicRsaN = publicKey.getModulus().toString();
+            this.privateRSAN = privateKey.getModulus().toString();
+            this.rsaE = publicKey.getPublicExponent().toString();
+            this.gInBigPower = "3";
+            this.rsaPrivateKey = privateKey;
+            this.rsaPublicKey = publicKey;
+        } catch (NoSuchAlgorithmException e) {
+            this.username = username;
+            this.password = password;
+            this.publicRsaN = "1";
+            this.privateRSAN = "1";
+            this.rsaE = "2";
+            this.gInBigPower = "3";
+        }
+
     }
 
     public static User getInstance() {
         return instance;
     }
 
-    public static void generateInstance(String username, String password) {
-        if (instance == null)
+    public static void setInstance(String username, String password) {
             instance = new User(username, password);
-
     }
 
     public String getUsername() {
@@ -43,8 +77,8 @@ public class User {
         return password;
     }
 
-    public String getRsaN() {
-        return rsaN;
+    public String getPublicRsaN() {
+        return publicRsaN;
     }
 
     public String getRsaE() {

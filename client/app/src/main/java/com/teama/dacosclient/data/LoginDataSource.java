@@ -38,7 +38,7 @@ public class LoginDataSource {
     }
 
     public Result<User> login(String username, String password) {
-    User.generateInstance(username, password);
+    User.setInstance(username, password);
     User user = User.getInstance();
         try {
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
@@ -78,7 +78,7 @@ public class LoginDataSource {
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("username", user.getUsername());
                     params.put("password", user.getPassword());
-                    params.put("public_rsa_n", user.getRsaN());
+                    params.put("public_rsa_n", user.getPublicRsaN());
                     params.put("public_rsa_e", user.getRsaE());
                     params.put("g_in_big_power", user.getGInBigPower());
                     Log.i("sending ", params.toString());

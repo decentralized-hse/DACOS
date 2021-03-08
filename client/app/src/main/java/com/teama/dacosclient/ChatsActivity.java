@@ -7,16 +7,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.teama.dacosclient.data.model.User;
+
 public class ChatsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
-        String count = getIntent().getStringExtra("username");
-
-        TextView editText = (TextView) findViewById(R.id.textView2);
-        editText.setText(count, TextView.BufferType.EDITABLE);
+        TextView editText = findViewById(R.id.textView2);
+        editText.setText(User.getInstance().getUsername(), TextView.BufferType.EDITABLE);
 
     }
 }

@@ -44,15 +44,12 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.getContext(), "error", Toast.LENGTH_LONG).show();
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
                 Result<User> result = loginRepository
                         .login(usernameEditText.getText().toString(),
                                 passwordEditText.getText().toString());
                 loadingProgressBar.setVisibility(View.INVISIBLE);
-
-
             }
 
         });

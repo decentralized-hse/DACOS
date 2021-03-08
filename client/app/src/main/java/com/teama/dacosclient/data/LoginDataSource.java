@@ -1,28 +1,24 @@
 package com.teama.dacosclient.data;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.teama.dacosclient.data.model.LoggedInUser;
+import com.teama.dacosclient.ChatsActivity;
+import com.teama.dacosclient.data.model.User;
 import com.teama.dacosclient.ui.login.LoginActivity;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,17 +37,23 @@ public class LoginDataSource {
         this.username = username;
     }
 
-    public Result<LoggedInUser> login(String username, String password) {
-
+    public Result<User> login(String username, String password) {
+    User.generateInstance(username, password);
+    User user = User.getInstance();
         try {
-            RequestQueue queue = Volley.newRequestQueue(LoginActivity.GetContext());
+            RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
+            queue.start();
             String url = "http://10.0.2.2:8000/register";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     new Response.Listener<String>()
                     {
                         @Override
                         public void onResponse(String response) {
-                            Log.d("onResponse", response);
+                                Log.e("nice","+");
+                                Intent intent = new Intent(LoginActivity.getContext(), ChatsActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                LoginActivity.getContext().startActivity(intent);
+
                         }
                     },
                     new Response.ErrorListener()
@@ -63,8 +65,9 @@ public class LoginDataSource {
                             String errorMsg = "";
                             if(response != null && response.data != null){
                                 String errorString = new String(response.data);
-                                Toast.makeText(LoginActivity.GetContext(), errorString,Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.getContext(), errorString,Toast.LENGTH_LONG).show();
                             }
+                            Log.e("bad","-");
                         }
                     }
             ) {
@@ -73,11 +76,11 @@ public class LoginDataSource {
                 {
 
                     Map<String, String> params = new HashMap<String, String>();
-                    params.put("username",username);
-                    params.put("password",password);
-                    params.put("public_rsa_n","23");
-                    params.put("public_rsa_e","32");
-                    params.put("g_in_big_power","44");
+                    params.put("username", user.getUsername());
+                    params.put("password", user.getPassword());
+                    params.put("public_rsa_n", user.getRsaN());
+                    params.put("public_rsa_e", user.getRsaE());
+                    params.put("g_in_big_power", user.getGInBigPower());
                     Log.i("sending ", params.toString());
 
                     return params;
@@ -88,9 +91,7 @@ public class LoginDataSource {
             stringRequest.setRetryPolicy(new DefaultRetryPolicy(10000, 1, 1.0f));
             // Add the request to the RequestQueue.
             queue.add(stringRequest);
-            queue.wait();
-            LoggedInUser fakeUser = new LoggedInUser(java.util.UUID.randomUUID().toString(), "start");
-            return new Result.Success<>(fakeUser);
+            return new Result.Success<>(user);
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));
         }

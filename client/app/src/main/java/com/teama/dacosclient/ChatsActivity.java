@@ -17,7 +17,6 @@ public class ChatsActivity extends AppCompatActivity {
 
         TextView editText = (TextView) findViewById(R.id.textView2);
         editText.setText(count, TextView.BufferType.EDITABLE);
-        Toast.makeText(getApplicationContext(), count, Toast.LENGTH_LONG).show();
 
     }
 }

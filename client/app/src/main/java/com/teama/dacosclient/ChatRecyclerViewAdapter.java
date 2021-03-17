@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.teama.dacosclient.data.model.Chat;
-import com.teama.dacosclient.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 

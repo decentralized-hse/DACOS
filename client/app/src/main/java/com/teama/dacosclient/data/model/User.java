@@ -29,31 +29,21 @@ public class User {
     private String rsaE;
     private String gInBigPower;
     private String privateRSAN;
-    private RSAPrivateKey rsaPrivateKey;
-    private RSAPublicKey rsaPublicKey;
+
+    // TODO: fix serialization problem on RSA keys:
+    //  https://stackoverflow.com/questions/40921562/how-to-serialize-deserialize-a-flexiprovider-keypair-using-gson
+    //  or change crypto to elliptic curve
+
 
     private static User instance;
 
-
     private User(String username, String password) {
-        try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA);
-            generator.initialize(2048);
-            KeyPair keyPair = generator.genKeyPair();
-            RSAPublicKey publicKey = (java.security.interfaces.RSAPublicKey) keyPair.getPublic();
-            RSAPrivateKey privateKey = (java.security.interfaces.RSAPrivateKey) keyPair.getPrivate();
-            this.username = username;
-            this.password = password;
-            this.publicRsaN = publicKey.getModulus().toString();
-            this.privateRSAN = privateKey.getModulus().toString();
-            this.rsaE = publicKey.getPublicExponent().toString();
-            this.gInBigPower = "3";
-            this.rsaPrivateKey = privateKey;
-            this.rsaPublicKey = publicKey;
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("Critical user errer", "couldn't find corresponding algorithm");
-        }
-
+        this.username = username;
+        this.password = password;
+        this.publicRsaN = "0";
+        this.privateRSAN = "0";
+        this.rsaE = "0";
+        this.gInBigPower = "0";
     }
 
     public static User getInstance() {

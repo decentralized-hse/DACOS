@@ -12,7 +12,7 @@ public class ChatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chats);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    // Не уверен, нужна ли эта строчка:
+                    // Not sure if this line is not obsolete:
                     // https://developer.android.com/guide/fragments/transactions#reordering
                     .setReorderingAllowed(true)
                     .add(R.id.chats_container, ChatFragment.class, null)

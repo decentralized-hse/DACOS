@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class SerializationUnitTest {
     @Test
     public void serializeRsaKeyPairTest() throws Exception {
-
+        // Example of serializing rsa keypair to byte[]
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = kpg.generateKeyPair();
         ByteArrayOutputStream b = new ByteArrayOutputStream();

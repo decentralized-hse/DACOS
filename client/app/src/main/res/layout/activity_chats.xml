@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChatsActivity">
+    tools:context=".ChatsActivity"
+    >
 
     <FrameLayout
         android:id="@+id/chats_container"

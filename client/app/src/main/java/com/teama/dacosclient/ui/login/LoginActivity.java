@@ -24,7 +24,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        context = getApplicationContext();
+        context = this;
         LoginRepository loginRepository = LoginRepository.getInstance();
         if (loginRepository.isLoggedIn())
         {

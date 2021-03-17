@@ -3,9 +3,6 @@ package com.teama.dacosclient;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.TextView;
-
-import com.teama.dacosclient.data.model.User;
 
 public class ChatsActivity extends AppCompatActivity {
 
@@ -13,8 +10,13 @@ public class ChatsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chats);
-        TextView editText = (TextView) findViewById(R.id.textView2);
-        editText.setText(User.getInstance().getUsername() + " " + User.getInstance().getPassword(), TextView.BufferType.EDITABLE);
-
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    // Не уверен, нужна ли эта строчка:
+                    // https://developer.android.com/guide/fragments/transactions#reordering
+                    .setReorderingAllowed(true)
+                    .add(R.id.chats_container, ChatFragment.class, null)
+                    .commit();
+        }
     }
 }

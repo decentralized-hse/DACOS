@@ -51,12 +51,7 @@ public class User {
             this.rsaPrivateKey = privateKey;
             this.rsaPublicKey = publicKey;
         } catch (NoSuchAlgorithmException e) {
-            this.username = username;
-            this.password = password;
-            this.publicRsaN = "1";
-            this.privateRSAN = "1";
-            this.rsaE = "2";
-            this.gInBigPower = "3";
+            Log.e("Critical user errer", "couldn't find corresponding algorithm");
         }
 
     }

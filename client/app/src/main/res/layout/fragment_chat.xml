@@ -42,6 +42,7 @@
                 android:textAlignment="textStart"
                 android:fontFamily="@font/ubuntu_mono"
                 android:textSize="20sp"
+                android:singleLine="true"
                 />
         </LinearLayout>
     </LinearLayout>

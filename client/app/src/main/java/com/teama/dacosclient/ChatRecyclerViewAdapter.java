@@ -20,6 +20,7 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
      * mValues serves as interlayer between Adapter and Chat.CHATS static list.
      */
     private final List<Chat> mValues;
+    private final String MESSAGE_HISTORY_IS_EMPTY = "Message history is empty";
 
     public ChatRecyclerViewAdapter(List<Chat> items) {
         mValues = items;
@@ -36,6 +37,10 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mUsernameTextView.setText(mValues.get(position).getUsername());
+        holder.mLastMessageTextView.setText(
+                mValues.get(position).getMessages().isEmpty() ?
+                        MESSAGE_HISTORY_IS_EMPTY :
+                        mValues.get(position).getLastMessage().getText());
     }
 
     @Override
@@ -46,19 +51,19 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mUsernameTextView;
-        public final TextView mContentView;
+        public final TextView mLastMessageTextView;
         public Chat mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mUsernameTextView = (TextView) view.findViewById(R.id.username);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mLastMessageTextView = (TextView) view.findViewById(R.id.last_message);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mUsernameTextView.getText() + "'";
         }
     }
 }

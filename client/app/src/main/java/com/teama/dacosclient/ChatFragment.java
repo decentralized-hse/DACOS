@@ -55,6 +55,7 @@ public class ChatFragment extends Fragment {
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     mLayoutManager.getOrientation());
             recyclerView.addItemDecoration(mDividerItemDecoration);
+
         }
         return view;
     }

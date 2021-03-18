@@ -31,7 +31,7 @@ public class Chat extends BaseObservable {
     }
 
     static {
-        createChat("Sergey").addMessage(new Message("sosi", false));
+        createChat("Sergey").addMessage(new Message("zdarova", false));
         createChat("Dima")
                 .addMessage(
                         new Message("Very very very very very very " +
@@ -39,14 +39,23 @@ public class Chat extends BaseObservable {
                                 false
                         )
                 );
-        createChat("Artemiy Fitisov");
-        createChat("Vlad");
-        createChat("Anton");
+        createChat("Artemiy Fitisov").addMessage(new Message("privet", false));
+        createChat("Vlad").addMessage(new Message("che kak", false));
+        createChat("Anton").addMessage(new Message("sps", false));
         createChat("Boris");
-        createChat("Ivan");
+        createChat("Ivan").addMessage(new Message("ku", false));
         createChat("Konstantin");
-        createChat("Alexandr");
-        createChat("Alexey");
+        createChat("Alexandr").addMessage(new Message("che kak", false));;
+        createChat("Alexey").addMessage(new Message("здарова", false));;
+        createChat("Natasha");
+        createChat("Olya").addMessage(new Message("как жизнь?", false));;
+        createChat("Masha").addMessage(new Message("хороший чат блин", false));;
+        createChat("Dasha");
+        createChat("Josh").addMessage(new Message("ыыы", false));;
+        createChat("John").addMessage(new Message("!", false));;
+        createChat("Grisha");
+        createChat("Pavel").addMessage(new Message("когда стики завезут", false));;
+        createChat("Oleg").addMessage(new Message("priv", false));;
     }
 
     /**

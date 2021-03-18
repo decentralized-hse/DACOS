@@ -26,9 +26,13 @@ public class ChatFragment extends Fragment {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
+     * Link to the adapter is setted up here.
      */
     public ChatFragment() {
+        adapter = new ChatRecyclerViewAdapter(Chat.getChats());
     }
+
+    private ChatRecyclerViewAdapter adapter;
 
     /**
      * Creates instance of ChatFragment.
@@ -55,15 +59,17 @@ public class ChatFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
             recyclerView.setLayoutManager(mLayoutManager);
-            ChatRecyclerViewAdapter mAdapter = new ChatRecyclerViewAdapter(Chat.getChats());
-            recyclerView.setAdapter(mAdapter);
+            recyclerView.setAdapter(adapter);
             Chat.observeChatsData(getViewLifecycleOwner(),
-                    (Observer<List<Chat>>) mAdapter::setChats);
+                    (Observer<List<Chat>>) adapter::setChats);
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     mLayoutManager.getOrientation());
             recyclerView.addItemDecoration(mDividerItemDecoration);
-
         }
         return view;
+    }
+
+    public ChatRecyclerViewAdapter getAdapter() {
+        return adapter;
     }
 }

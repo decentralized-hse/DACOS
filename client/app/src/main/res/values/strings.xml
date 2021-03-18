@@ -12,5 +12,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="chats_title">Чаты</string>
-    <string name="login_title">Регистрация</string>
+    <string name="login_title">DacosClient</string>
 </resources>

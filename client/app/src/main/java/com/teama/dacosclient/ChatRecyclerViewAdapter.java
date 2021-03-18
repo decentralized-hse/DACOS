@@ -1,7 +1,9 @@
 package com.teama.dacosclient;
 
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +21,21 @@ public class ChatRecyclerViewAdapter extends RecyclerView.Adapter<ChatRecyclerVi
     /**
      * mValues serves as interlayer between Adapter and Chat.CHATS static list.
      */
-    private final List<Chat> mValues;
+    private List<Chat> mValues;
+
     private final String MESSAGE_HISTORY_IS_EMPTY = "Message history is empty";
 
     public ChatRecyclerViewAdapter(List<Chat> items) {
         mValues = items;
     }
 
+    public void setChats(List<Chat> chatList) {
+        // TODO: update setChats with DiffUtil to reduce time and resources for updating adapter:
+        // https://stackoverflow.com/questions/44489235/update-recyclerview-with-android-livedata
+        // https://ideone.com/tslCYG
+        mValues = chatList;
+        notifyDataSetChanged();
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())

@@ -19,16 +19,8 @@ public class Message {
         return text;
     }
 
-    public void setText(@NonNull String text) {
-        this.text = text;
-    }
-
     @NonNull
     public Boolean getFromMe() {
         return fromMe;
-    }
-
-    public void setFromMe(@NonNull Boolean fromMe) {
-        this.fromMe = fromMe;
     }
 }

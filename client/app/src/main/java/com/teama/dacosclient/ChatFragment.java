@@ -4,15 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.teama.dacosclient.data.model.Chat;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of chats.
@@ -51,7 +55,10 @@ public class ChatFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
             recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setAdapter(new ChatRecyclerViewAdapter(Chat.CHATS));
+            ChatRecyclerViewAdapter mAdapter = new ChatRecyclerViewAdapter(Chat.getChats());
+            recyclerView.setAdapter(mAdapter);
+            Chat.observeChatsData(getViewLifecycleOwner(),
+                    (Observer<List<Chat>>) mAdapter::setChats);
             DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                     mLayoutManager.getOrientation());
             recyclerView.addItemDecoration(mDividerItemDecoration);

@@ -46,8 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
-                Result<User> result = loginRepository
-                        .login(usernameEditText.getText().toString(),
+                loginRepository.login(usernameEditText.getText().toString(),
                                 passwordEditText.getText().toString());
                 loadingProgressBar.setVisibility(View.INVISIBLE);
             }

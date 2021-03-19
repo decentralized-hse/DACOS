@@ -28,7 +28,8 @@ public class LoginRepository {
     // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
-        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("user", null);
         Type type = new TypeToken<User>() {}.getType();
@@ -52,9 +53,11 @@ public class LoginRepository {
         dataSource.logout();
     }
 
+    // TODO: probably not working well, is called, when there is error in connecting to server.
     private void setLoggedInUser(User user) {
         this.user = user;
-        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(User.getInstance());
@@ -62,11 +65,11 @@ public class LoginRepository {
         editor.apply();
     }
 
-    public Result<User> login(String username, String password) {
-        Result<User> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<User>) result).getData());
-        }
-        return result;
+    public void login(String username, String password) {
+        dataSource.login(username, password);
+    }
+
+    public void saveUserInJson(User user) {
+        setLoggedInUser(user);
     }
 }

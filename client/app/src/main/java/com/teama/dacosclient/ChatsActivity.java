@@ -16,6 +16,9 @@ import android.widget.SearchView;
 import com.teama.dacosclient.data.model.Chat;
 import com.teama.dacosclient.data.model.Message;
 
+import org.libsodium.jni.NaCl;
+import org.libsodium.jni.Sodium;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

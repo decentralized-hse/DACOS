@@ -4,10 +4,10 @@ from .models import PublicUser, Ticket, PrivateUser, Block
 import json as simplejson
 
 
-"""
-register user for both PrivateUser and PublicUser tables
-"""
 def register_user(request):
+    """
+    register user for both PrivateUser and PublicUser tables
+    """
     private_registration = can_register_private(request)
     print(private_registration)
     public_registration = can_register_public(request)
@@ -45,11 +45,11 @@ def can_register_public(request):
         return HttpResponseBadRequest('Not enough data')
 
 
-"""
-usertype is PublicUser or PrivateUser
-returns True if table contains username
-"""
 def check_username(username, usertype):
+    """
+    usertype is PublicUser or PrivateUser
+    returns True if table contains username
+    """
     users = usertype.objects.values('username')
     for user in users:
         if username == user['username']:

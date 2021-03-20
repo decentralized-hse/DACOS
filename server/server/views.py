@@ -2,47 +2,32 @@ from argon2 import PasswordHasher
 from django.http import HttpResponse, HttpResponseNotAllowed,HttpResponseBadRequest, JsonResponse
 from .models import PublicUser, Ticket, PrivateUser, Block
 import json as simplejson
+from ast import literal_eval
 
 
 def register_user(request):
     """
     register user for both PrivateUser and PublicUser tables
     """
-    private_registration = can_register_private(request)
-    print(private_registration)
-    public_registration = can_register_public(request)
-    if private_registration.status_code != 200:
-        return private_registration
-    if public_registration.status_code != 200:
-        return public_registration
-    PrivateUser(username=request.POST['username'], password_hash=PasswordHasher().hash(request.POST['password'])).save()
-    PublicUser(username=request.POST['username'], cell_id=1, public_rsa_n=request.POST['public_rsa_n'],
-               public_rsa_e=request.POST['public_rsa_e'], g_in_big_power=request.POST['g_in_big_power']).save()
-    return HttpResponse('OK')
-
-
-def can_register_private(request):
-    if request.method == 'POST' and 'username' in request.POST and 'password' in request.POST:
+    public_key = ''
+    if request.method == 'POST' and 'username' in request.POST\
+            and 'password' in request.POST and 'publicKey' in request.POST:
+        public_key = simplejson.loads(request.POST['publicKey'])
         if len(request.POST['username']) > 50:
-            return HttpResponseBadRequest('username is too long - 50 symbols is limit')
-        if check_username(request.POST['username'], PrivateUser):
-            return HttpResponseBadRequest('username is already in use')
-        return HttpResponse('OK')
+            return HttpResponseBadRequest('Username is too long - 50 symbols is limit.')
+        if check_username(request.POST['username'], PrivateUser) or\
+                check_username(request.POST['username'], PublicUser):
+            return HttpResponseBadRequest('Username is already in use.')
+        print(len(public_key))
+        if not isinstance(public_key, list) or len(public_key) != 32:
+            return HttpResponseBadRequest('Format of public key is bad.')
     else:
-        return HttpResponseBadRequest('bad request format')
+        return HttpResponseBadRequest('Bad request format.')
 
-
-def can_register_public(request):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed('Invalid request type')
-    if 'username' in request.POST and 'public_rsa_n' in request.POST and 'public_rsa_e' in request.POST and 'g_in_big_power' in request.POST:
-        if len(request.POST.get('username')) > 50:
-            return HttpResponseBadRequest('username is too long - 50 symbols is limit')
-        if check_username(request.POST.get('username'), PublicUser):
-            return HttpResponseBadRequest('username is already in use')
-        return HttpResponse('OK')
-    else:
-        return HttpResponseBadRequest('Not enough data')
+    PrivateUser(username=request.POST['username'], password_hash=PasswordHasher().hash(request.POST['password'])).save()
+    # TODO: replace cell_id=1 with actual cell ids.
+    PublicUser(username=request.POST['username'], cell_id=1, public_key=public_key).save()
+    return HttpResponse('OK')
 
 
 def check_username(username, usertype):

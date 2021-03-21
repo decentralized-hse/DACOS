@@ -57,7 +57,7 @@ public class ChatsActivity extends AppCompatActivity
         String json = sharedPreferences.getString(
                 "chats",
                 gson.toJson(new ArrayList<Chat>())); // DefaultValue.
-        Log.e("", "loadSavedChatInstance: " + json);
+        Log.i("", "loadSavedChatInstance: " + json);
         Type type = new TypeToken<ArrayList<Chat>>() {
         }.getType();
         Chat.setChat(gson.fromJson(json, type));

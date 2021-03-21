@@ -93,7 +93,7 @@ public class ChatRecyclerViewAdapter
 
         @Override
         public void onClick(View v) {
-            onChatListener.onChatClick(mItem.getId());
+            onChatListener.onChatClick(mItem.getNumericId());
         }
     }
 

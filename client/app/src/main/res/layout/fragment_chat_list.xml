@@ -8,4 +8,5 @@
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.ChatFragment"
-    tools:listitem="@layout/fragment_chat" />
+    tools:listitem="@layout/fragment_chat"
+    android:overScrollMode="never"/>

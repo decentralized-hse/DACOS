@@ -1,19 +1,22 @@
 package com.teama.dacosclient.data.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.stfalcon.chatkit.commons.models.IUser;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
-public class Chat extends BaseObservable {
+public class Chat extends BaseObservable implements IUser {
 
     private static List<Chat> CHATS = new ArrayList<>();
 
@@ -41,7 +44,7 @@ public class Chat extends BaseObservable {
     public static Chat createChat(String username) {
         Chat chat = new Chat(username);
         CHATS.add(chat);
-        chatsData.postValue(CHATS);
+        chatsData.setValue(CHATS);
         return chat;
     }
 
@@ -53,7 +56,7 @@ public class Chat extends BaseObservable {
      */
     public static void setChat(List<Chat> chats) {
         CHATS = chats;
-        chatsData.postValue(CHATS);
+        chatsData.setValue(CHATS);
     }
 
     @NotNull
@@ -68,32 +71,40 @@ public class Chat extends BaseObservable {
      */
     public static void generateDummyChats() {
         CHATS = new ArrayList<>();
-        chatsData.postValue(CHATS);
-        createChat("Sergey").addMessage(new Message("zdarova", false));
+        chatsData.setValue(CHATS);
+        Chat sergey = createChat("Sergey");
+        sergey.addMessage("zdarova", false);
+        sergey.addMessage("priv", true);
+        sergey.addMessage("!", false);
+        sergey.addMessage("!!", false);
+        sergey.addMessage("!!!", true);
+        sergey.addMessage("?", true);
+        sergey.addMessage(":)", false);
+        sergey.addMessage(":/", true);
+        sergey.addMessage("пока!", false);
         createChat("Dima")
-                .addMessage(
-                        new Message("Very very very very very very " +
+                .addMessage("Very very very very very very " +
                                 "very very very very very very very very very very long message",
-                                false
-                        )
+                        true
+
                 );
-        createChat("Artemiy Fitisov").addMessage(new Message("privet", false));
-        createChat("Vlad").addMessage(new Message("che kak", false));
-        createChat("Anton").addMessage(new Message("sps", false));
+        createChat("Artemiy Fitisov").addMessage("privet", false);
+        createChat("Vlad").addMessage("che kak", false);
+        createChat("Anton").addMessage("sps", false);
         createChat("Boris");
-        createChat("Ivan").addMessage(new Message("ku", false));
+        createChat("Ivan").addMessage("ku", false);
         createChat("Konstantin");
-        createChat("Alexandr").addMessage(new Message("che kak", false));
-        createChat("Alexey").addMessage(new Message("здарова", false));
+        createChat("Alexandr").addMessage("che kak", false);
+        createChat("Alexey").addMessage("здарова", false);
         createChat("Natasha");
-        createChat("Olya").addMessage(new Message("как жизнь?", false));
-        createChat("Masha").addMessage(new Message("хороший чат блин", false));
+        createChat("Olya").addMessage("как жизнь?", false);
+        createChat("Masha").addMessage("хороший чат блин", false);
         createChat("Dasha");
-        createChat("Josh").addMessage(new Message("ыыы", false));
-        createChat("John").addMessage(new Message("!", false));
+        createChat("Josh").addMessage("ыыы", false);
+        createChat("John").addMessage("!", false);
         createChat("Grisha");
-        createChat("Pavel").addMessage(new Message("когда стики завезут", false));
-        createChat("Oleg").addMessage(new Message("priv", false));
+        createChat("Pavel").addMessage("когда стики завезут", false);
+        createChat("Oleg").addMessage("priv", false);
     }
 
 
@@ -106,8 +117,8 @@ public class Chat extends BaseObservable {
         this.messages = messages;
     }
 
-    public void addMessage(@NonNull Message message) {
-        messages.add(message);
+    public void addMessage(String text, Boolean fromMe) {
+        messages.add(new Message(text, fromMe, id));
         Chat.notifyDataUpdate();
     }
 
@@ -126,7 +137,7 @@ public class Chat extends BaseObservable {
     }
 
     private static void notifyDataUpdate() {
-        chatsData.postValue(CHATS);
+        chatsData.setValue(CHATS);
     }
 
     @Override
@@ -144,7 +155,22 @@ public class Chat extends BaseObservable {
     }
 
     @NonNull
-    public Integer getId() {
+    public Integer getNumericId() {
         return id;
+    }
+
+    @Override
+    public String getId() {
+        return String.valueOf(id);
+    }
+
+    @Override
+    public String getName() {
+        return username;
+    }
+
+    @Override
+    public String getAvatar() {
+        return null;
     }
 }

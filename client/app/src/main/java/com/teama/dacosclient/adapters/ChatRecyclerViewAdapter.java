@@ -1,14 +1,13 @@
-package com.teama.dacosclient;
+package com.teama.dacosclient.adapters;
 
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.model.Chat;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.teama.dacosclient.ui.login;
+package com.teama.dacosclient.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.teama.dacosclient.ChatsActivity;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.LoginRepository;
-import com.teama.dacosclient.data.Result;
-import com.teama.dacosclient.data.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 

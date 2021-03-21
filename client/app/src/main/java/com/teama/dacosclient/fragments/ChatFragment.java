@@ -1,4 +1,4 @@
-package com.teama.dacosclient;
+package com.teama.dacosclient.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.teama.dacosclient.R;
+import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
 
 import java.util.List;

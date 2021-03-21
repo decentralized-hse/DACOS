@@ -1,7 +1,6 @@
 package com.teama.dacosclient.data;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,17 +9,14 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.teama.dacosclient.ChatsActivity;
+import com.teama.dacosclient.activities.ChatsActivity;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.model.User;
-import com.teama.dacosclient.ui.login.LoginActivity;
+import com.teama.dacosclient.activities.LoginActivity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

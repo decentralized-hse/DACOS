@@ -1,35 +1,22 @@
-package com.teama.dacosclient;
+package com.teama.dacosclient.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.teama.dacosclient.fragments.ChatFragment;
+import com.teama.dacosclient.R;
+import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
-import com.teama.dacosclient.data.model.Message;
-import com.teama.dacosclient.data.model.User;
-import com.teama.dacosclient.ui.login.LoginActivity;
-
-import org.libsodium.jni.NaCl;
-import org.libsodium.jni.Sodium;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static android.content.ContentValues.TAG;
 
 public class ChatsActivity extends AppCompatActivity {
 

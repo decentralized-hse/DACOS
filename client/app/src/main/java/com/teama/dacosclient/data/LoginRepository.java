@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.teama.dacosclient.data.model.User;
-import com.teama.dacosclient.ui.login.LoginActivity;
+import com.teama.dacosclient.activities.LoginActivity;
 
 import java.lang.reflect.Type;
 

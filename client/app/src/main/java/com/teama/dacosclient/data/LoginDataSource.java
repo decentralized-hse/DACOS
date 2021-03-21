@@ -26,8 +26,8 @@ import java.util.Map;
 public class LoginDataSource {
 
     public void login(String username, String password) {
-    User.setInstance(username, password);
-    User user = User.getInstance();
+        User.setInstance(username, password);
+        User user = User.getInstance();
         try {
             RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
             queue.start();
@@ -37,26 +37,25 @@ public class LoginDataSource {
             String publicKey = gson.toJson(user.getPublicKey());
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                     response -> {
-                            Intent intent = new Intent(LoginActivity.getContext(), ChatsActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            ((Activity)LoginActivity.getContext()).finish();
-                            LoginRepository.getInstance().saveUserInJson(user);
-                            LoginActivity.getContext().startActivity(intent);
+                        Intent intent = new Intent(LoginActivity.getContext(), ChatsActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ((Activity) LoginActivity.getContext()).finish();
+                        LoginRepository.getInstance().saveUserInJson(user);
+                        LoginActivity.getContext().startActivity(intent);
 
                     },
                     error -> {
 
                         NetworkResponse response = error.networkResponse;
                         String errorMsg = "";
-                        if(response != null && response.data != null){
+                        if (response != null && response.data != null) {
                             String errorString = new String(response.data);
-                            Toast.makeText(LoginActivity.getContext(), errorString,Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.getContext(), errorString, Toast.LENGTH_LONG).show();
                         }
                     }
             ) {
                 @Override
-                protected Map<String, String> getParams()
-                {
+                protected Map<String, String> getParams() {
 
                     Map<String, String> params = new HashMap<String, String>();
                     params.put("username", user.getUsername());

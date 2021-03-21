@@ -22,8 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         context = this;
         LoginRepository loginRepository = LoginRepository.getInstance();
-        if (loginRepository.isLoggedIn())
-        {
+        if (loginRepository.isLoggedIn()) {
             Intent intent = new Intent(this, ChatsActivity.class);
             finish();
             this.startActivity(intent);
@@ -43,14 +42,14 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
                 loginRepository.login(usernameEditText.getText().toString(),
-                                passwordEditText.getText().toString());
+                        passwordEditText.getText().toString());
                 loadingProgressBar.setVisibility(View.INVISIBLE);
             }
 
         });
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return context;
     }
 }

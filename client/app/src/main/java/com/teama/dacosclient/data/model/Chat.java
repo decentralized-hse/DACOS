@@ -29,7 +29,6 @@ public class Chat extends BaseObservable {
     private Integer id;
 
 
-
     private Chat(@NotNull String username) {
         this.username = username;
         this.id = CHATS.size();
@@ -37,7 +36,7 @@ public class Chat extends BaseObservable {
 
 
     /**
-     Creates new chat and inserts it into the static chat array.
+     * Creates new chat and inserts it into the static chat array.
      */
     public static Chat createChat(String username) {
         Chat chat = new Chat(username);
@@ -49,6 +48,7 @@ public class Chat extends BaseObservable {
     /**
      * Sets chat instance to the given one.
      * Should only be called for put the parsed Json data into Chats!
+     *
      * @param chats List<Chat>, parsed from a Json.
      */
     public static void setChat(List<Chat> chats) {
@@ -66,8 +66,7 @@ public class Chat extends BaseObservable {
      * Is here for testing purposes only!
      * Should be called to fill CHATS with dummy data.
      */
-    public static void generateDummyChats()
-    {
+    public static void generateDummyChats() {
         CHATS = new ArrayList<>();
         chatsData.postValue(CHATS);
         createChat("Sergey").addMessage(new Message("zdarova", false));

@@ -4,12 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ChatsActivity"
-    >
+    tools:context=".activities.ChatsActivity">
 
     <FrameLayout
         android:id="@+id/chats_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

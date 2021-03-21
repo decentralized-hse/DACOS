@@ -46,6 +46,7 @@ public class ChatRecyclerViewAdapter
         updateCurrentChats();
         notifyDataSetChanged();
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -99,12 +100,12 @@ public class ChatRecyclerViewAdapter
     private void updateCurrentChats() {
         currentChats = new ArrayList<>();
         if (query.equals(""))
-            for (Chat chat: mValues) {
+            for (Chat chat : mValues) {
                 if (!chat.getMessages().isEmpty())
                     currentChats.add(chat);
             }
         else
-            for (Chat chat: mValues) {
+            for (Chat chat : mValues) {
                 if (chat.getUsername().toLowerCase().contains(query.toLowerCase()))
                     currentChats.add(chat);
             }

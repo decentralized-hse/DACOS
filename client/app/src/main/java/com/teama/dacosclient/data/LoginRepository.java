@@ -32,7 +32,8 @@ public class LoginRepository {
                 .getSharedPreferences("dacos", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("user", null);
-        Type type = new TypeToken<User>() {}.getType();
+        Type type = new TypeToken<User>() {
+        }.getType();
         user = gson.fromJson(json, type);
         User.setInstance(user);
     }

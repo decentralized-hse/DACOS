@@ -2,8 +2,11 @@ package com.teama.dacosclient.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.SearchView;
@@ -18,16 +21,20 @@ import com.teama.dacosclient.data.model.Chat;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class ChatsActivity extends AppCompatActivity {
+public class ChatsActivity extends AppCompatActivity
+        implements ChatRecyclerViewAdapter.OnChatListener {
 
 
     private ChatRecyclerViewAdapter currentChatFragmentAdapter;
+    private static ChatsActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
         loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
+        Chat.generateDummyChats();
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
         // unexpected crashes. In case of problems, check:
         // https://stackoverflow.com/questions/44782827/passing-changing-variables-to-recyclerview-adapter
@@ -50,6 +57,7 @@ public class ChatsActivity extends AppCompatActivity {
         String json = sharedPreferences.getString(
                 "chats",
                 gson.toJson(new ArrayList<Chat>())); // DefaultValue.
+        Log.e("", "loadSavedChatInstance: " + json );
         Type type = new TypeToken<ArrayList<Chat>>() {}.getType();
         Chat.setChat(gson.fromJson(json, type));
     }
@@ -84,5 +92,16 @@ public class ChatsActivity extends AppCompatActivity {
         editor.putString("chats", json);
         editor.apply();
         super.onStop();
+    }
+
+    @Override
+    public void onChatClick(int chatId) {
+        Intent intent = new Intent(this, DialogActivity.class);
+        intent.putExtra("chat_id", chatId);
+        startActivity(intent);
+    }
+
+    public static ChatsActivity getActivityContext(){
+        return context;
     }
 }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.teama.dacosclient.R;
+import com.teama.dacosclient.activities.ChatsActivity;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
 
@@ -30,7 +31,7 @@ public class ChatFragment extends Fragment {
      * Link to the adapter is setted up here.
      */
     public ChatFragment() {
-        adapter = new ChatRecyclerViewAdapter(Chat.getChats());
+        adapter = new ChatRecyclerViewAdapter(Chat.getChats(), ChatsActivity.getActivityContext());
     }
 
     private ChatRecyclerViewAdapter adapter;

@@ -14,10 +14,12 @@
         android:theme="@style/Theme.DacosClient"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.ChatsActivity"
-            android:label="@string/chats_title">
-
-        </activity>
+        <activity
+            android:name=".activities.DialogActivity"
+            android:label="@string/dialog_title"/>
+        <activity
+            android:name=".activities.ChatsActivity"
+            android:label="@string/chats_title"/>
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/login_title">

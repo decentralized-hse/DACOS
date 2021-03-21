@@ -13,4 +13,5 @@
     <string name="login_title">DacosClient</string>
     <string name="search_menu_title">Поиск</string>
     <string name="server_host">http://10.0.2.2:8000/</string>
+    <string name="dialog_title">Чат</string>
 </resources>

@@ -2,6 +2,7 @@ package com.teama.dacosclient.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,13 @@ public class ChatRecyclerViewAdapter
     private List<Chat> mValues;
     private List<Chat> currentChats;
     private String query;
+    private OnChatListener mOnChatListener;
 
     private final String MESSAGE_HISTORY_IS_EMPTY = "Message history is empty";
 
-    public ChatRecyclerViewAdapter(List<Chat> items) {
-        mValues = items;
+    public ChatRecyclerViewAdapter(List<Chat> items, OnChatListener onChatListener) {
+        this.mValues = items;
+        this.mOnChatListener = onChatListener;
         query = "";
         updateCurrentChats();
     }
@@ -47,7 +50,7 @@ public class ChatRecyclerViewAdapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_chat, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(view, mOnChatListener);
     }
 
     @Override
@@ -71,22 +74,25 @@ public class ChatRecyclerViewAdapter
         updateCurrentChats();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final View mView;
         public final TextView mUsernameTextView;
         public final TextView mLastMessageTextView;
         public Chat mItem;
+        OnChatListener onChatListener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnChatListener onChatListener) {
             super(view);
             mView = view;
-            mUsernameTextView = (TextView) view.findViewById(R.id.username);
-            mLastMessageTextView = (TextView) view.findViewById(R.id.last_message);
+            mUsernameTextView = view.findViewById(R.id.username);
+            mLastMessageTextView = view.findViewById(R.id.last_message);
+            this.onChatListener = onChatListener;
+            itemView.setOnClickListener(this);
         }
 
         @Override
-        public String toString() {
-            return super.toString() + " '" + mUsernameTextView.getText() + "'";
+        public void onClick(View v) {
+            onChatListener.onChatClick(mItem.getId());
         }
     }
 
@@ -103,5 +109,9 @@ public class ChatRecyclerViewAdapter
                     currentChats.add(chat);
             }
         notifyDataSetChanged();
+    }
+
+    public interface OnChatListener {
+        void onChatClick(int chatId);
     }
 }

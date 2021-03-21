@@ -23,11 +23,16 @@ public class Chat extends BaseObservable {
     private String username;
     @NonNull
     private List<Message> messages = new ArrayList<>();
+    // Id is used for differentiating between similar chats,
+    // and in adapter to contain chat position in the global list.
+    @NonNull
+    private Integer id;
 
 
 
     private Chat(@NotNull String username) {
         this.username = username;
+        this.id = CHATS.size();
     }
 
 
@@ -63,6 +68,8 @@ public class Chat extends BaseObservable {
      */
     public static void generateDummyChats()
     {
+        CHATS = new ArrayList<>();
+        chatsData.postValue(CHATS);
         createChat("Sergey").addMessage(new Message("zdarova", false));
         createChat("Dima")
                 .addMessage(
@@ -77,17 +84,17 @@ public class Chat extends BaseObservable {
         createChat("Boris");
         createChat("Ivan").addMessage(new Message("ku", false));
         createChat("Konstantin");
-        createChat("Alexandr").addMessage(new Message("che kak", false));;
-        createChat("Alexey").addMessage(new Message("здарова", false));;
+        createChat("Alexandr").addMessage(new Message("che kak", false));
+        createChat("Alexey").addMessage(new Message("здарова", false));
         createChat("Natasha");
-        createChat("Olya").addMessage(new Message("как жизнь?", false));;
-        createChat("Masha").addMessage(new Message("хороший чат блин", false));;
+        createChat("Olya").addMessage(new Message("как жизнь?", false));
+        createChat("Masha").addMessage(new Message("хороший чат блин", false));
         createChat("Dasha");
-        createChat("Josh").addMessage(new Message("ыыы", false));;
-        createChat("John").addMessage(new Message("!", false));;
+        createChat("Josh").addMessage(new Message("ыыы", false));
+        createChat("John").addMessage(new Message("!", false));
         createChat("Grisha");
-        createChat("Pavel").addMessage(new Message("когда стики завезут", false));;
-        createChat("Oleg").addMessage(new Message("priv", false));;
+        createChat("Pavel").addMessage(new Message("когда стики завезут", false));
+        createChat("Oleg").addMessage(new Message("priv", false));
     }
 
 
@@ -135,5 +142,10 @@ public class Chat extends BaseObservable {
     @Override
     public int hashCode() {
         return Objects.hash(username, messages);
+    }
+
+    @NonNull
+    public Integer getId() {
+        return id;
     }
 }

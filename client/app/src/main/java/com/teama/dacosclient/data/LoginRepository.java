@@ -25,7 +25,7 @@ public class LoginRepository {
     // @see https://developer.android.com/training/articles/keystore
     private User user = null;
 
-    // private constructor : singleton access
+    // Private constructor : singleton access.
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
         SharedPreferences sharedPreferences = LoginActivity.getContext()
@@ -53,7 +53,6 @@ public class LoginRepository {
         dataSource.logout();
     }
 
-    // TODO: probably not working well, is called, when there is error in connecting to server.
     private void setLoggedInUser(User user) {
         this.user = user;
         SharedPreferences sharedPreferences = LoginActivity.getContext()

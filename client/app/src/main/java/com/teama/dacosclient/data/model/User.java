@@ -31,11 +31,6 @@ public class User {
     private byte[] privateKey;
     private byte[] publicKey;
 
-    // TODO: fix serialization problem on RSA keys:
-    //  https://stackoverflow.com/questions/40921562/how-to-serialize-deserialize-a-flexiprovider-keypair-using-gson
-    //  or change crypto to elliptic curve
-
-
     private static User instance;
 
     private User(String username, String password) {

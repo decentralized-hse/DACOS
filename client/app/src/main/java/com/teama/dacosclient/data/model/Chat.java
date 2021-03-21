@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class Chat extends BaseObservable {
 
-    private static final List<Chat> CHATS = new ArrayList<>();
+    private static List<Chat> CHATS = new ArrayList<>();
 
     private static final MutableLiveData<List<Chat>> chatsData = new MutableLiveData<>(CHATS);
 
@@ -30,7 +30,39 @@ public class Chat extends BaseObservable {
         this.username = username;
     }
 
-    static {
+
+    /**
+     Creates new chat and inserts it into the static chat array.
+     */
+    public static Chat createChat(String username) {
+        Chat chat = new Chat(username);
+        CHATS.add(chat);
+        chatsData.postValue(CHATS);
+        return chat;
+    }
+
+    /**
+     * Sets chat instance to the given one.
+     * Should only be called for put the parsed Json data into Chats!
+     * @param chats List<Chat>, parsed from a Json.
+     */
+    public static void setChat(List<Chat> chats) {
+        CHATS = chats;
+        chatsData.postValue(CHATS);
+    }
+
+    @NotNull
+    public String getUsername() {
+        return username;
+    }
+
+
+    /**
+     * Is here for testing purposes only!
+     * Should be called to fill CHATS with dummy data.
+     */
+    public static void generateDummyChats()
+    {
         createChat("Sergey").addMessage(new Message("zdarova", false));
         createChat("Dima")
                 .addMessage(
@@ -56,21 +88,6 @@ public class Chat extends BaseObservable {
         createChat("Grisha");
         createChat("Pavel").addMessage(new Message("когда стики завезут", false));;
         createChat("Oleg").addMessage(new Message("priv", false));;
-    }
-
-    /**
-     Creates new chat and inserts it into the static chat array.
-     */
-    public static Chat createChat(String username) {
-        Chat chat = new Chat(username);
-        CHATS.add(chat);
-        chatsData.postValue(CHATS);
-        return chat;
-    }
-
-    @NotNull
-    public String getUsername() {
-        return username;
     }
 
 

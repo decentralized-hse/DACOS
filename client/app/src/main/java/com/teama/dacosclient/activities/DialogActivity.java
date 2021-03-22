@@ -1,15 +1,13 @@
 package com.teama.dacosclient.activities;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 
+import com.google.gson.Gson;
 import com.stfalcon.chatkit.commons.ImageLoader;
 import com.stfalcon.chatkit.messages.MessageInput;
 import com.stfalcon.chatkit.messages.MessagesList;
@@ -18,21 +16,27 @@ import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.model.Chat;
 import com.teama.dacosclient.data.model.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DialogActivity extends AppCompatActivity {
+
+    private MessagesListAdapter<Message> adapter;
+    private int chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
-        int chatId = getIntent().getIntExtra("chat_id", 0);
+        chatId = getIntent().getIntExtra("chat_id", 0);
         Log.d("dialog activity", "Current chat id: " + chatId);
-        MessagesList messagesList = findViewById(R.id.messages_list);
+
+        MessageInput messageInput = findViewById(R.id.message_input);
         ImageLoader imageLoader = (imageView, url, payload) -> {
             // Empty image loader is required for MessagesListAdapter to work.
         };
-        MessageInput messageInput = findViewById(R.id.message_input);
+        adapter = new MessagesListAdapter<>("-1", imageLoader);
+
         messageInput.setInputListener(input -> {
             String inp = input.toString().trim();
             if (!inp.isEmpty()) {
@@ -41,9 +45,7 @@ public class DialogActivity extends AppCompatActivity {
             }
             return false;
         });
-        MessagesListAdapter<Message> adapter = new MessagesListAdapter<>("-1", imageLoader);
-        messagesList.setAdapter(adapter);
-        adapter.addToEnd(Chat.getChats().get(chatId).getMessages(), true);
+
         Chat.observeChatsData(this, new Observer() {
             @Override
             public void onChanged(Object o) {
@@ -59,8 +61,27 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        MessagesList messagesList = findViewById(R.id.messages_list);
+
+        messagesList.setAdapter(adapter);
+        adapter.addToEnd(new ArrayList<>(Chat.getChats().get(chatId).getMessages()), true);
+        super.onStart();
+    }
+
+    @Override
     protected void onStop() {
         Chat.removeChatsDataObserver(this);
+        // TODO: probably not the best solution, but saving onstop of chats activity doesn't detect
+        //  (obviously) current changes in dialog activity.
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Chat.getChats());
+        editor.putString("chats", json);
+        Log.d("json", "saved : " + json);
+        editor.apply();
         super.onStop();
     }
 }

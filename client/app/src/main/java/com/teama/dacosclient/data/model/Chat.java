@@ -1,7 +1,5 @@
 package com.teama.dacosclient.data.model;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.LifecycleOwner;
@@ -134,6 +132,10 @@ public class Chat extends BaseObservable implements IUser {
 
     public static void observeChatsData(LifecycleOwner lifecycleOwner, Observer observer) {
         chatsData.observe(lifecycleOwner, observer);
+    }
+
+    public  static void removeChatsDataObserver(LifecycleOwner lifecycleOwner) {
+        chatsData.removeObservers(lifecycleOwner);
     }
 
     private static void notifyDataUpdate() {

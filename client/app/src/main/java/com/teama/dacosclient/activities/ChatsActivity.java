@@ -34,7 +34,9 @@ public class ChatsActivity extends AppCompatActivity
         context = this;
         loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
-        Chat.generateDummyChats();
+
+        //Chat.generateDummyChats();
+
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
         // unexpected crashes. In case of problems, check:
         // https://stackoverflow.com/questions/44782827/passing-changing-variables-to-recyclerview-adapter
@@ -91,6 +93,7 @@ public class ChatsActivity extends AppCompatActivity
         Gson gson = new Gson();
         String json = gson.toJson(Chat.getChats());
         editor.putString("chats", json);
+        Log.d("json", "saved : " + json);
         editor.apply();
         super.onStop();
     }

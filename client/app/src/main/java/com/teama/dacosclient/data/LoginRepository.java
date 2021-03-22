@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.teama.dacosclient.data.model.User;
-import com.teama.dacosclient.ui.login.LoginActivity;
+import com.teama.dacosclient.activities.LoginActivity;
 
 import java.lang.reflect.Type;
 
@@ -25,13 +25,15 @@ public class LoginRepository {
     // @see https://developer.android.com/training/articles/keystore
     private User user = null;
 
-    // private constructor : singleton access
+    // Private constructor : singleton access.
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
-        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("user", null);
-        Type type = new TypeToken<User>() {}.getType();
+        Type type = new TypeToken<User>() {
+        }.getType();
         user = gson.fromJson(json, type);
         User.setInstance(user);
     }
@@ -54,7 +56,8 @@ public class LoginRepository {
 
     private void setLoggedInUser(User user) {
         this.user = user;
-        SharedPreferences sharedPreferences = LoginActivity.getContext().getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(User.getInstance());
@@ -62,11 +65,11 @@ public class LoginRepository {
         editor.apply();
     }
 
-    public Result<User> login(String username, String password) {
-        Result<User> result = dataSource.login(username, password);
-        if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<User>) result).getData());
-        }
-        return result;
+    public void login(String username, String password) {
+        dataSource.login(username, password);
+    }
+
+    public void saveUserInJson(User user) {
+        setLoggedInUser(user);
     }
 }

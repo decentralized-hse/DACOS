@@ -1,4 +1,4 @@
-package com.teama.dacosclient.ui.login;
+package com.teama.dacosclient.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,13 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.teama.dacosclient.ChatsActivity;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.data.LoginRepository;
-import com.teama.dacosclient.data.Result;
-import com.teama.dacosclient.data.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -26,8 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         context = this;
         LoginRepository loginRepository = LoginRepository.getInstance();
-        if (loginRepository.isLoggedIn())
-        {
+        if (loginRepository.isLoggedIn()) {
             Intent intent = new Intent(this, ChatsActivity.class);
             finish();
             this.startActivity(intent);
@@ -46,16 +41,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
-                Result<User> result = loginRepository
-                        .login(usernameEditText.getText().toString(),
-                                passwordEditText.getText().toString());
+                loginRepository.login(usernameEditText.getText().toString(),
+                        passwordEditText.getText().toString());
                 loadingProgressBar.setVisibility(View.INVISIBLE);
             }
 
         });
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return context;
     }
 }

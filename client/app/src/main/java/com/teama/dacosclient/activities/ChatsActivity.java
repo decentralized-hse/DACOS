@@ -1,37 +1,40 @@
-package com.teama.dacosclient;
+package com.teama.dacosclient.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.Button;
 import android.widget.SearchView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.teama.dacosclient.fragments.ChatFragment;
+import com.teama.dacosclient.R;
+import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
-import com.teama.dacosclient.data.model.Message;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-
-public class ChatsActivity extends AppCompatActivity {
+public class ChatsActivity extends AppCompatActivity
+        implements ChatRecyclerViewAdapter.OnChatListener {
 
 
     private ChatRecyclerViewAdapter currentChatFragmentAdapter;
+    private static ChatsActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = this;
+        loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
-
+        Chat.generateDummyChats();
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
         // unexpected crashes. In case of problems, check:
         // https://stackoverflow.com/questions/44782827/passing-changing-variables-to-recyclerview-adapter
@@ -42,10 +45,22 @@ public class ChatsActivity extends AppCompatActivity {
                     // https://developer.android.com/guide/fragments/transactions#reordering
                     .setReorderingAllowed(true)
                     .add(R.id.chats_container, fragment, "CHAT")
-                    .addToBackStack("CHAT")
                     .commit();
         }
         currentChatFragmentAdapter = fragment.getAdapter();
+    }
+
+    private void loadSavedChatInstance() {
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(
+                "chats",
+                gson.toJson(new ArrayList<Chat>())); // DefaultValue.
+        Log.i("", "loadSavedChatInstance: " + json);
+        Type type = new TypeToken<ArrayList<Chat>>() {
+        }.getType();
+        Chat.setChat(gson.fromJson(json, type));
     }
 
     @Override
@@ -66,5 +81,28 @@ public class ChatsActivity extends AppCompatActivity {
             }
         });
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Chat.getChats());
+        editor.putString("chats", json);
+        editor.apply();
+        super.onStop();
+    }
+
+    @Override
+    public void onChatClick(int chatId) {
+        Intent intent = new Intent(this, DialogActivity.class);
+        intent.putExtra("chat_id", chatId);
+        startActivity(intent);
+    }
+
+    public static ChatsActivity getActivityContext() {
+        return context;
     }
 }

@@ -1,4 +1,4 @@
-package com.teama.dacosclient;
+package com.teama.dacosclient.adapters;
 
 public interface ISearchableAdapter {
 

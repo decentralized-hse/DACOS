@@ -18,7 +18,7 @@ public class SerializationUnitTest {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         KeyPair keyPair = kpg.generateKeyPair();
         ByteArrayOutputStream b = new ByteArrayOutputStream();
-        ObjectOutputStream o =  new ObjectOutputStream(b);
+        ObjectOutputStream o = new ObjectOutputStream(b);
         o.writeObject(keyPair);
         byte[] res = b.toByteArray();
 

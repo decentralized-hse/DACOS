@@ -6,6 +6,9 @@ import android.util.Log;
 import com.teama.dacosclient.data.LoginDataSource;
 import com.teama.dacosclient.data.LoginRepository;
 
+import org.libsodium.jni.NaCl;
+import org.libsodium.jni.Sodium;
+
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -25,25 +28,18 @@ public class User {
 
     private String username;
     private String password;
-    private String publicRsaN;
-    private String rsaE;
-    private String gInBigPower;
-    private String privateRSAN;
-
-    // TODO: fix serialization problem on RSA keys:
-    //  https://stackoverflow.com/questions/40921562/how-to-serialize-deserialize-a-flexiprovider-keypair-using-gson
-    //  or change crypto to elliptic curve
-
+    private byte[] privateKey;
+    private byte[] publicKey;
 
     private static User instance;
 
     private User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.publicRsaN = "0";
-        this.privateRSAN = "0";
-        this.rsaE = "0";
-        this.gInBigPower = "0";
+        Sodium sodium = NaCl.sodium();
+        publicKey = new byte[Sodium.crypto_box_publickeybytes()];
+        privateKey = new byte[Sodium.crypto_box_secretkeybytes()];
+        Sodium.crypto_box_keypair(publicKey, privateKey);
     }
 
     public static User getInstance() {
@@ -66,15 +62,11 @@ public class User {
         return password;
     }
 
-    public String getPublicRsaN() {
-        return publicRsaN;
+    public byte[] getPrivateKey() {
+        return privateKey;
     }
 
-    public String getRsaE() {
-        return rsaE;
-    }
-
-    public String getGInBigPower() {
-        return gInBigPower;
+    public byte[] getPublicKey() {
+        return publicKey;
     }
 }

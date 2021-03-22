@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.teama.dacosclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,13 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DacosClient"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".ChatsActivity"
-            android:label="@string/chats_title">
-
-        </activity>
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
         <activity
-            android:name=".ui.login.LoginActivity"
+            android:name=".activities.DialogActivity"
+            android:label="@string/dialog_title" />
+        <activity
+            android:name=".activities.ChatsActivity"
+            android:label="@string/chats_title" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:label="@string/login_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

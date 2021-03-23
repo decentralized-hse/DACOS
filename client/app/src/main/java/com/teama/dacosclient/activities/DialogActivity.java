@@ -17,6 +17,7 @@ import com.teama.dacosclient.data.model.Chat;
 import com.teama.dacosclient.data.model.Message;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DialogActivity extends AppCompatActivity {
@@ -40,7 +41,8 @@ public class DialogActivity extends AppCompatActivity {
         messageInput.setInputListener(input -> {
             String inp = input.toString().trim();
             if (!inp.isEmpty()) {
-                Chat.getChats().get(chatId).addMessage(inp, true);
+                Chat.getChats().get(chatId).addMessage(inp, true,
+                        new Date(System.currentTimeMillis()));
                 return true;
             }
             return false;
@@ -74,14 +76,7 @@ public class DialogActivity extends AppCompatActivity {
         Chat.removeChatsDataObserver(this);
         // TODO: probably not the best solution, but saving onstop of chats activity doesn't detect
         //  (obviously) current changes in dialog activity.
-        SharedPreferences sharedPreferences = LoginActivity.getContext()
-                .getSharedPreferences("dacos", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(Chat.getChats());
-        editor.putString("chats", json);
-        Log.d("json", "saved : " + json);
-        editor.apply();
+        Chat.saveChatsInJson();
         super.onStop();
     }
 }

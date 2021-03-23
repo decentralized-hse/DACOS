@@ -3,13 +3,13 @@ from django.http import HttpResponse, HttpResponseNotAllowed,HttpResponseBadRequ
 from .models import PublicUser, Ticket, PrivateUser, Block
 import json as simplejson
 from ast import literal_eval
+from server.settings import *
 
 
 def register_user(request):
     """
     register user for both PrivateUser and PublicUser tables
     """
-    public_key = ''
     if request.method == 'POST' and 'username' in request.POST\
             and 'password' in request.POST and 'publicKey' in request.POST:
         public_key = simplejson.loads(request.POST['publicKey'])
@@ -87,8 +87,8 @@ def write_log(request):
         message = request.POST.get('message')
         log = Block.objects.latest('block').block
         id = Block.objects.latest('block').id
-        if len(log) == 32:
-            Block(block=[message,]).save()
+        if len(log) == global_settings('BLOCK_SIZE'):
+            Block(block=[message]).save()
         else:
             log.append(message)
             Block.objects.filter(id=id).update(block=log)
@@ -100,10 +100,11 @@ def write_log(request):
 def read_message(request):
     if request.method == 'GET' and 'block_number' in request.GET and request.GET['block_number'].isdigit():
         blocks = list(Block.objects.all().values_list('block', flat=True))
-        print(blocks)
+        if len(blocks[-1]) < global_settings('BLOCK_SIZE'):
+            blocks = blocks[:-1]
         block_number = int(request.GET['block_number'])
-        if block_number >= len(blocks):
-            return HttpResponseBadRequest('Wrong data')
+        if block_number > len(blocks):
+            return JsonResponse([], safe=False)
         return JsonResponse(blocks[block_number:], safe=False)
     else:
         return HttpResponseBadRequest('Not enough data')

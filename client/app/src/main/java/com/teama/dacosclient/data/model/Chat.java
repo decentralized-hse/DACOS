@@ -30,6 +30,8 @@ public class Chat extends BaseObservable implements IUser {
 
     private static int currentBlock = 0;
 
+    private final byte[] publicKey;
+
     // TODO: observer on chatsData to see if there is chat added and it should be updated in HashMap.
     private static HashMap<String, Integer> nicknameToId;
 
@@ -43,17 +45,18 @@ public class Chat extends BaseObservable implements IUser {
     private Integer id;
 
 
-    private Chat(@NotNull String username) {
+    private Chat(@NotNull String username, byte[] publicKey) {
         this.username = username;
         this.id = CHATS.size();
+        this.publicKey = publicKey;
     }
 
 
     /**
      * Creates new chat and inserts it into the static chat array.
      */
-    public static Chat createChat(String username) {
-        Chat chat = new Chat(username);
+    public static Chat createChat(String username, byte[] publicKey) {
+        Chat chat = new Chat(username, publicKey);
         CHATS.add(chat);
         chatsData.setValue(CHATS);
         return chat;
@@ -95,7 +98,8 @@ public class Chat extends BaseObservable implements IUser {
     public static void generateDummyChats() {
         CHATS = new ArrayList<>();
         chatsData.setValue(CHATS);
-        Chat sergey = createChat("Sergey");
+        byte[] dummyPublicKey = new byte[0];
+        Chat sergey = createChat("Sergey", dummyPublicKey);
         sergey.addMessage("zdarova", false, new Date(System.currentTimeMillis()));
         sergey.addMessage("priv", true, new Date(System.currentTimeMillis()));
         sergey.addMessage("!", false, new Date(System.currentTimeMillis()));
@@ -105,30 +109,30 @@ public class Chat extends BaseObservable implements IUser {
         sergey.addMessage(":)", false, new Date(System.currentTimeMillis()));
         sergey.addMessage(":/", true, new Date(System.currentTimeMillis()));
         sergey.addMessage("пока!", false , new Date(System.currentTimeMillis()));
-        createChat("Dima")
+        createChat("Dima", dummyPublicKey)
                 .addMessage("Very very very very very very " +
                                 "very very very very very very very very very very long message",
                         true,
                         new Date(System.currentTimeMillis())
 
                 );
-        createChat("Artemiy Fitisov").addMessage("privet", false, new Date(System.currentTimeMillis()));
-        createChat("Vlad").addMessage("che kak", false, new Date(System.currentTimeMillis()));
-        createChat("Anton").addMessage("sps", false, new Date(System.currentTimeMillis()));
-        createChat("Boris");
-        createChat("Ivan").addMessage("ku", false, new Date(System.currentTimeMillis()));
-        createChat("Konstantin");
-        createChat("Alexandr").addMessage("che kak", false, new Date(System.currentTimeMillis()));
-        createChat("Alexey").addMessage("здарова", false, new Date(System.currentTimeMillis()));
-        createChat("Natasha");
-        createChat("Olya").addMessage("как жизнь?", false, new Date(System.currentTimeMillis()));
-        createChat("Masha").addMessage("хороший чат блин", false, new Date(System.currentTimeMillis()));
-        createChat("Dasha");
-        createChat("Josh").addMessage("ыыы", false, new Date(System.currentTimeMillis()));
-        createChat("John").addMessage("!", false, new Date(System.currentTimeMillis()));
-        createChat("Grisha");
-        createChat("Pavel").addMessage("когда стики завезут", false, new Date(System.currentTimeMillis()));
-        createChat("Oleg").addMessage("priv", false, new Date(System.currentTimeMillis()));
+        createChat("Artemiy Fitisov", dummyPublicKey).addMessage("privet", false, new Date(System.currentTimeMillis()));
+        createChat("Vlad", dummyPublicKey).addMessage("che kak", false, new Date(System.currentTimeMillis()));
+        createChat("Anton", dummyPublicKey).addMessage("sps", false, new Date(System.currentTimeMillis()));
+        createChat("Boris", dummyPublicKey);
+        createChat("Ivan", dummyPublicKey).addMessage("ku", false, new Date(System.currentTimeMillis()));
+        createChat("Konstantin", dummyPublicKey);
+        createChat("Alexandr", dummyPublicKey).addMessage("che kak", false, new Date(System.currentTimeMillis()));
+        createChat("Alexey", dummyPublicKey).addMessage("здарова", false, new Date(System.currentTimeMillis()));
+        createChat("Natasha", dummyPublicKey);
+        createChat("Olya", dummyPublicKey).addMessage("как жизнь?", false, new Date(System.currentTimeMillis()));
+        createChat("Masha", dummyPublicKey).addMessage("хороший чат блин", false, new Date(System.currentTimeMillis()));
+        createChat("Dasha", dummyPublicKey);
+        createChat("Josh", dummyPublicKey).addMessage("ыыы", false, new Date(System.currentTimeMillis()));
+        createChat("John", dummyPublicKey).addMessage("!", false, new Date(System.currentTimeMillis()));
+        createChat("Grisha", dummyPublicKey);
+        createChat("Pavel", dummyPublicKey).addMessage("когда стики завезут", false, new Date(System.currentTimeMillis()));
+        createChat("Oleg", dummyPublicKey).addMessage("priv", false, new Date(System.currentTimeMillis()));
     }
 
 
@@ -141,9 +145,11 @@ public class Chat extends BaseObservable implements IUser {
         this.messages = messages;
     }
 
-    public void addMessage(String text, Boolean fromMe, Date date) {
-        messages.add(new Message(text, fromMe, id, date));
+    public Message addMessage(String text, Boolean fromMe, Date date) {
+        Message addedMessage = new Message(text, fromMe, id, date);
+        messages.add(addedMessage);
         Chat.notifyDataUpdate();
+        return addedMessage;
     }
 
     public Message getLastMessage() {
@@ -218,5 +224,9 @@ public class Chat extends BaseObservable implements IUser {
         editor.putInt("current_block", currentBlock);
         Log.d("json", "saved : " + json);
         editor.apply();
+    }
+
+    public byte[] getPublicKey() {
+        return publicKey;
     }
 }

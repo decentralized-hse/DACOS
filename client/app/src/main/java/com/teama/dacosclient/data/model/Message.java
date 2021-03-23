@@ -8,6 +8,7 @@ import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
 import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
+import com.goterl.lazycode.lazysodium.interfaces.Box;
 import com.goterl.lazycode.lazysodium.utils.Key;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import com.stfalcon.chatkit.commons.models.IMessage;
@@ -29,6 +30,7 @@ public class Message implements IMessage {
     private long id;
     @NonNull
     private int chatId;
+    private static final LazySodium sodium = new LazySodiumAndroid(new SodiumAndroid());
 
     private static final transient IUser ME = new IUser() {
         @Override
@@ -80,16 +82,10 @@ public class Message implements IMessage {
         return fromMe;
     }
 
-    public static void parseMessage(String encodedMessageWithNonce) {
-        LazySodium sodium = new LazySodiumAndroid(new SodiumAndroid());
-        String[] splitMessage = encodedMessageWithNonce.split(Pattern.quote("|"));
-        if (splitMessage.length != 2)
-            return;
-        String encodedMessage = splitMessage[0];
-        byte[] nonce = LazySodium.toBin(splitMessage[1]);
+    public static void parseMessage(String encodedMessage) {
         String decodedMessage;
         try {
-            decodedMessage = sodium.cryptoBoxOpenEasy(encodedMessage, nonce,
+            decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage,
                     new KeyPair(
                             Key.fromBytes(User.getInstance().getPublicKey()),
                             Key.fromBytes(User.getInstance().getPrivateKey())
@@ -113,5 +109,18 @@ public class Message implements IMessage {
             return;
         }
         Chat.getChats().get(userId).addMessage(message[1], false, date);
+    }
+
+    public static String encodeMessage(Message message, Chat chat){
+        String fullMessage = chat.getName() + '∫' +
+                message.getText() + '∫' +
+                System.currentTimeMillis();
+        try {
+            return sodium.cryptoBoxSealEasy(message.getText(), Key.fromBytes(chat.getPublicKey()));
+        } catch (SodiumException e) {
+            // Shouldn't be called - all info should be proper.
+            Log.e("encoding message", "Error message: " + e.getMessage());
+            return null;
+        }
     }
 }

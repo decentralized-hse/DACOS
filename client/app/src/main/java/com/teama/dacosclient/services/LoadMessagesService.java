@@ -72,11 +72,8 @@ public class LoadMessagesService extends Service
                         }
                     },
                             error -> {
-                                Log.d("response blocks", "error");}
-                    );
-                    // Add the realibility on the connection.
-                    stringRequest.setRetryPolicy
-                            (new DefaultRetryPolicy(10000, 1, 1.0f));
+                                Log.d("response blocks", "error");
+                    });
                     // Add the request to the RequestQueue.
                     queue.add(stringRequest);
                     // Not returning Result, because it will be processed in queue thread.

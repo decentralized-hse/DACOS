@@ -50,8 +50,8 @@ public class DialogActivity extends AppCompatActivity {
             @Override
             public void onChanged(Object o) {
                 List<Message> updatedMessages = Chat.getChats().get(chatId).getMessages();
-                if (adapter.getItemCount() - 1 != updatedMessages.size()) {
-                    List<Message> toAdd = updatedMessages
+                if (adapter.getItemCount() - 1 < updatedMessages.size()) {
+                        List<Message> toAdd = updatedMessages
                             .subList(adapter.getItemCount() - 1, updatedMessages.size());
                     for (Message message : toAdd)
                         adapter.addToStart(message, true);
@@ -94,6 +94,7 @@ public class DialogActivity extends AppCompatActivity {
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             response -> Log.d("Server", "message sended: " + response),
                             error -> {
+                        Chat.getChats().get(chatId).deleteMessage(addedMessage);
                         adapter.delete(addedMessage);
                         Toast.makeText(this, "Error sending message",
                                 Toast.LENGTH_LONG).show();

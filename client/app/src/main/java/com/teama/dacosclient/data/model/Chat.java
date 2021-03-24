@@ -229,4 +229,9 @@ public class Chat extends BaseObservable implements IUser {
     public byte[] getPublicKey() {
         return publicKey;
     }
+
+    public void deleteMessage(Message message) {
+        messages.remove(message);
+        notifyDataUpdate();
+    }
 }

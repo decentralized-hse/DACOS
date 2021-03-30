@@ -73,3 +73,10 @@ def read_message(request):
     else:
         return HttpResponseBadRequest('Not enough data')
 
+def get_users(request):
+    if request.method != 'GET':
+        return HttpResponseBadRequest('Not enough data')
+    # all_users is list of tuples.
+    all_users = list(PublicUser.objects.all().values_list('username', 'public_key'))
+    return HttpResponse(simplejson.
+                        dumps([{'username': user[0], 'public_key': user[1]} for user in all_users]))

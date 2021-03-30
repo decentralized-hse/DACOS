@@ -14,10 +14,5 @@ class PrivateUser(models.Model):
     password_hash = models.CharField('Хэш пароля пользователя', max_length=77)
 
 
-class Ticket(models.Model):
-    usernameRSA = models.CharField(max_length=300)
-    usernameAES = models.CharField(max_length=300)
-
-
 class Block(models.Model):
     block = ArrayField(models.CharField(max_length=500), size=32)

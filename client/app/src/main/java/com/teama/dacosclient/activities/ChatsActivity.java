@@ -17,6 +17,7 @@ import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
+import com.teama.dacosclient.services.GetNewUsersService;
 import com.teama.dacosclient.services.LoadMessagesService;
 
 import java.lang.reflect.Type;
@@ -36,8 +37,11 @@ public class ChatsActivity extends AppCompatActivity
         loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
 
-        Intent service = new Intent(context, LoadMessagesService.class);
-        context.startService(service);
+        Intent loadMessagesService = new Intent(context, LoadMessagesService.class);
+        Intent getUsersService = new Intent(context, GetNewUsersService.class);
+
+        context.startService(loadMessagesService);
+        context.startService(getUsersService);
         Chat.generateDummyChats();
 
         // Not sure if creating and saving fragment here is a great solution, may lead to potential

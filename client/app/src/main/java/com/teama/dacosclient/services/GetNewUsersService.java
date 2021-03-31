@@ -28,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
+// TODO: untested
 public class GetNewUsersService extends Service {
     public GetNewUsersService() {
     }
@@ -59,8 +60,8 @@ public class GetNewUsersService extends Service {
                         Log.d("response users", response);
                         if (response.equals("error"))
                             return;
-                        List<GetUserResponse> responseList =
-                                gson.fromJson(response, (Type) GetUserResponse.class);
+                        GetUserResponse[] responseList =
+                                gson.fromJson(response, (Type) GetUserResponse[].class);
                         Set<String> usernameSet = Chat.getChats().stream().map(Chat::getUsername).collect(Collectors.toSet());
                         for (GetUserResponse object : responseList) {
                             if (!usernameSet.contains(object.getUsername()))

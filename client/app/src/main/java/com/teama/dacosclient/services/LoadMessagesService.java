@@ -34,7 +34,7 @@ import java.util.TimerTask;
 public class LoadMessagesService extends Service
 {
 
-    private Timer timer = new Timer();
+    private final Timer timer = new Timer();
     Type responseType = new TypeToken<List<List<String>>>() {}.getType();
 
 
@@ -58,18 +58,16 @@ public class LoadMessagesService extends Service
                             .getResources().getString(R.string.server_host)
                             + "read_message?block_number=" + Chat.getCurrentBlock();
                     Gson gson = new Gson();
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("response blocks", response);
-                            if (response.equals("error"))
-                                return;
-                            List<List<String>> responseList = gson.fromJson(response, responseType);
-                            Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
-                            for (List<String> list : responseList)
-                                for (String message : list)
-                                    Message.parseMessage(message);
-                        }
+                    StringRequest stringRequest =
+                            new StringRequest(Request.Method.GET, url, response -> {
+                        Log.d("response blocks", response);
+                        if (response.equals("error"))
+                            return;
+                        List<List<String>> responseList = gson.fromJson(response, responseType);
+                        Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
+                        for (List<String> list : responseList)
+                            for (String message : list)
+                                Message.parseMessage(message);
                     },
                             error -> {
                                 Log.d("response blocks", "error");
@@ -78,17 +76,9 @@ public class LoadMessagesService extends Service
                     queue.add(stringRequest);
                     // Not returning Result, because it will be processed in queue thread.
                 } catch (Exception e) {
-                    Toast.makeText(LoginActivity.getContext(),
-                            "Error logging in", Toast.LENGTH_LONG).show();
+                    // No internet connection.
                 }
             }
         }, 0, 10*1000);// 10 Seconds.
     }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
 }

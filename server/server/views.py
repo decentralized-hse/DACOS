@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from django.http import HttpResponse, HttpResponseNotAllowed,HttpResponseBadRequest, JsonResponse
-from .models import PublicUser, Ticket, PrivateUser, Block
+from .models import PublicUser, PrivateUser, Block
 import json as simplejson
 from ast import literal_eval
 from server.settings import *
@@ -65,7 +65,7 @@ def read_message(request):
     if request.method == 'GET' and 'block_number' in request.GET and request.GET['block_number'].isdigit():
         blocks = list(Block.objects.all().values_list('block', flat=True))
         if len(blocks[-1]) < global_settings('BLOCK_SIZE'):
-            blocks = blocks[:-1]
+            blocks =            blocks[:-1]
         block_number = int(request.GET['block_number'])
         if block_number > len(blocks):
             return JsonResponse([], safe=False)

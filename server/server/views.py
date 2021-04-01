@@ -27,8 +27,7 @@ def register_user(request):
         return HttpResponseBadRequest('Bad request format.')
 
     PrivateUser(username=request.POST['username'], password_hash=PasswordHasher().hash(request.POST['password'])).save()
-    # TODO: replace cell_id=1 with actual cell ids.
-    PublicUser(username=request.POST['username'], cell_id=1, public_key=public_key).save()
+    PublicUser(username=request.POST['username'], public_key=public_key).save()
     return HttpResponse('OK')
 
 

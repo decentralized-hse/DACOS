@@ -4,8 +4,6 @@ from django.contrib.postgres.fields import ArrayField
 
 class PublicUser(models.Model):
     username = models.CharField(max_length=50)
-    # TODO: не нужно ли вообще убрать cell_id? Возможно это остаток от прошлых задумок сервера.
-    cell_id = models.IntegerField()
     public_key = ArrayField(models.IntegerField())
 
 

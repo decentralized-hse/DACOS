@@ -111,7 +111,7 @@ public class Message implements IMessage {
         Chat.getChats().get(userId).addMessage(message[1], false, date);
     }
 
-    public static String encodeMessage(Message message, Chat chat){
+    public static String encodeMessage(Message message, Chat chat) {
         String fullMessage = chat.getName() + '∫' +
                 message.getText() + '∫' +
                 System.currentTimeMillis();

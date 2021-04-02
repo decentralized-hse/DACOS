@@ -68,7 +68,8 @@ public class ChatsActivity extends AppCompatActivity
                 gson.toJson(new ArrayList<Chat>())); // DefaultValue.
         Chat.setCurrentBlock(sharedPreferences.getInt("current_block", 0));
         Log.i("", "loadSavedChatInstance: " + json);
-        Type type = new TypeToken<ArrayList<Chat>>() {}.getType();
+        Type type = new TypeToken<ArrayList<Chat>>() {
+        }.getType();
         Chat.setChat(gson.fromJson(json, type));
     }
 

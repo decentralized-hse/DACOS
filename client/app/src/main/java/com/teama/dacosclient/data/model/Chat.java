@@ -108,7 +108,7 @@ public class Chat extends BaseObservable implements IUser {
         sergey.addMessage("?", true, new Date(System.currentTimeMillis()));
         sergey.addMessage(":)", false, new Date(System.currentTimeMillis()));
         sergey.addMessage(":/", true, new Date(System.currentTimeMillis()));
-        sergey.addMessage("пока!", false , new Date(System.currentTimeMillis()));
+        sergey.addMessage("пока!", false, new Date(System.currentTimeMillis()));
         createChat("Dima", dummyPublicKey)
                 .addMessage("Very very very very very very " +
                                 "very very very very very very very very very very long message",
@@ -166,7 +166,7 @@ public class Chat extends BaseObservable implements IUser {
         chatsData.observe(lifecycleOwner, observer);
     }
 
-    public  static void removeChatsDataObserver(LifecycleOwner lifecycleOwner) {
+    public static void removeChatsDataObserver(LifecycleOwner lifecycleOwner) {
         chatsData.removeObservers(lifecycleOwner);
     }
 

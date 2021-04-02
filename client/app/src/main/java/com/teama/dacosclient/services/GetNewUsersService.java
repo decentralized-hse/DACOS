@@ -37,14 +37,12 @@ public class GetNewUsersService extends Service {
 
 
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -79,7 +77,7 @@ public class GetNewUsersService extends Service {
                     // No internet connection.
                 }
             }
-        }, 0, 60*1000);// 1 minute.
+        }, 0, 60 * 1000);// 1 minute.
     }
 
     // Naming in Response.class is bad because of purpose of mapping JSON to this class.

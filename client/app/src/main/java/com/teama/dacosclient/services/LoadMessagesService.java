@@ -31,22 +31,20 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class LoadMessagesService extends Service
-{
+public class LoadMessagesService extends Service {
 
     private final Timer timer = new Timer();
-    Type responseType = new TypeToken<List<List<String>>>() {}.getType();
+    Type responseType = new TypeToken<List<List<String>>>() {
+    }.getType();
 
 
     @Override
-    public IBinder onBind(Intent intent)
-    {
+    public IBinder onBind(Intent intent) {
         return null;
     }
 
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -60,18 +58,18 @@ public class LoadMessagesService extends Service
                     Gson gson = new Gson();
                     StringRequest stringRequest =
                             new StringRequest(Request.Method.GET, url, response -> {
-                        Log.d("response blocks", response);
-                        if (response.equals("error"))
-                            return;
-                        List<List<String>> responseList = gson.fromJson(response, responseType);
-                        Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
-                        for (List<String> list : responseList)
-                            for (String message : list)
-                                Message.parseMessage(message);
-                    },
-                            error -> {
-                                Log.d("response blocks", "error");
-                    });
+                                Log.d("response blocks", response);
+                                if (response.equals("error"))
+                                    return;
+                                List<List<String>> responseList = gson.fromJson(response, responseType);
+                                Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
+                                for (List<String> list : responseList)
+                                    for (String message : list)
+                                        Message.parseMessage(message);
+                            },
+                                    error -> {
+                                        Log.d("response blocks", "error");
+                                    });
                     // Add the request to the RequestQueue.
                     queue.add(stringRequest);
                     // Not returning Result, because it will be processed in queue thread.
@@ -79,6 +77,6 @@ public class LoadMessagesService extends Service
                     // No internet connection.
                 }
             }
-        }, 0, 10*1000);// 10 Seconds.
+        }, 0, 10 * 1000);// 10 Seconds.
     }
 }

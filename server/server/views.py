@@ -6,9 +6,6 @@ from ast import literal_eval
 from server.settings import *
 
 
-# TODO: add get all users, to give all info for creating Chat in android.
-
-
 def register_user(request):
     """
     register user for both PrivateUser and PublicUser tables

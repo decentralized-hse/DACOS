@@ -1,16 +1,24 @@
 package com.teama.dacosclient.data.model;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.google.gson.Gson;
 import com.stfalcon.chatkit.commons.models.IUser;
+import com.teama.dacosclient.activities.LoginActivity;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +27,13 @@ public class Chat extends BaseObservable implements IUser {
     private static List<Chat> CHATS = new ArrayList<>();
 
     private static final MutableLiveData<List<Chat>> chatsData = new MutableLiveData<>(CHATS);
+
+    private static int currentBlock = 0;
+
+    private final byte[] publicKey;
+
+    // TODO: observer on chatsData to see if there is chat added and it should be updated in HashMap.
+    private static HashMap<String, Integer> nicknameToId;
 
     @NonNull
     private String username;
@@ -30,17 +45,18 @@ public class Chat extends BaseObservable implements IUser {
     private Integer id;
 
 
-    private Chat(@NotNull String username) {
+    private Chat(@NotNull String username, byte[] publicKey) {
         this.username = username;
         this.id = CHATS.size();
+        this.publicKey = publicKey;
     }
 
 
     /**
      * Creates new chat and inserts it into the static chat array.
      */
-    public static Chat createChat(String username) {
-        Chat chat = new Chat(username);
+    public static Chat createChat(String username, byte[] publicKey) {
+        Chat chat = new Chat(username, publicKey);
         CHATS.add(chat);
         chatsData.setValue(CHATS);
         return chat;
@@ -54,7 +70,19 @@ public class Chat extends BaseObservable implements IUser {
      */
     public static void setChat(List<Chat> chats) {
         CHATS = chats;
+        nicknameToId = new HashMap<>();
         chatsData.setValue(CHATS);
+        for (int i = 0; i < chats.size(); i++)
+            nicknameToId.put(chats.get(i).username, i);
+        nicknameToId.put(User.getInstance().getUsername(), -1);
+    }
+
+    public static int getCurrentBlock() {
+        return currentBlock;
+    }
+
+    public static void setCurrentBlock(int currentBlock) {
+        Chat.currentBlock = currentBlock;
     }
 
     @NotNull
@@ -70,39 +98,41 @@ public class Chat extends BaseObservable implements IUser {
     public static void generateDummyChats() {
         CHATS = new ArrayList<>();
         chatsData.setValue(CHATS);
-        Chat sergey = createChat("Sergey");
-        sergey.addMessage("zdarova", false);
-        sergey.addMessage("priv", true);
-        sergey.addMessage("!", false);
-        sergey.addMessage("!!", false);
-        sergey.addMessage("!!!", true);
-        sergey.addMessage("?", true);
-        sergey.addMessage(":)", false);
-        sergey.addMessage(":/", true);
-        sergey.addMessage("пока!", false);
-        createChat("Dima")
+        byte[] dummyPublicKey = new byte[0];
+        Chat sergey = createChat("Sergey", dummyPublicKey);
+        sergey.addMessage("zdarova", false, new Date(System.currentTimeMillis()));
+        sergey.addMessage("priv", true, new Date(System.currentTimeMillis()));
+        sergey.addMessage("!", false, new Date(System.currentTimeMillis()));
+        sergey.addMessage("!!", false, new Date(System.currentTimeMillis()));
+        sergey.addMessage("!!!", true, new Date(System.currentTimeMillis()));
+        sergey.addMessage("?", true, new Date(System.currentTimeMillis()));
+        sergey.addMessage(":)", false, new Date(System.currentTimeMillis()));
+        sergey.addMessage(":/", true, new Date(System.currentTimeMillis()));
+        sergey.addMessage("пока!", false, new Date(System.currentTimeMillis()));
+        createChat("Dima", dummyPublicKey)
                 .addMessage("Very very very very very very " +
                                 "very very very very very very very very very very long message",
-                        true
+                        true,
+                        new Date(System.currentTimeMillis())
 
                 );
-        createChat("Artemiy Fitisov").addMessage("privet", false);
-        createChat("Vlad").addMessage("che kak", false);
-        createChat("Anton").addMessage("sps", false);
-        createChat("Boris");
-        createChat("Ivan").addMessage("ku", false);
-        createChat("Konstantin");
-        createChat("Alexandr").addMessage("che kak", false);
-        createChat("Alexey").addMessage("здарова", false);
-        createChat("Natasha");
-        createChat("Olya").addMessage("как жизнь?", false);
-        createChat("Masha").addMessage("хороший чат блин", false);
-        createChat("Dasha");
-        createChat("Josh").addMessage("ыыы", false);
-        createChat("John").addMessage("!", false);
-        createChat("Grisha");
-        createChat("Pavel").addMessage("когда стики завезут", false);
-        createChat("Oleg").addMessage("priv", false);
+        createChat("Artemiy Fitisov", dummyPublicKey).addMessage("privet", false, new Date(System.currentTimeMillis()));
+        createChat("Vlad", dummyPublicKey).addMessage("che kak", false, new Date(System.currentTimeMillis()));
+        createChat("Anton", dummyPublicKey).addMessage("sps", false, new Date(System.currentTimeMillis()));
+        createChat("Boris", dummyPublicKey);
+        createChat("Ivan", dummyPublicKey).addMessage("ku", false, new Date(System.currentTimeMillis()));
+        createChat("Konstantin", dummyPublicKey);
+        createChat("Alexandr", dummyPublicKey).addMessage("che kak", false, new Date(System.currentTimeMillis()));
+        createChat("Alexey", dummyPublicKey).addMessage("здарова", false, new Date(System.currentTimeMillis()));
+        createChat("Natasha", dummyPublicKey);
+        createChat("Olya", dummyPublicKey).addMessage("как жизнь?", false, new Date(System.currentTimeMillis()));
+        createChat("Masha", dummyPublicKey).addMessage("хороший чат блин", false, new Date(System.currentTimeMillis()));
+        createChat("Dasha", dummyPublicKey);
+        createChat("Josh", dummyPublicKey).addMessage("ыыы", false, new Date(System.currentTimeMillis()));
+        createChat("John", dummyPublicKey).addMessage("!", false, new Date(System.currentTimeMillis()));
+        createChat("Grisha", dummyPublicKey);
+        createChat("Pavel", dummyPublicKey).addMessage("когда стики завезут", false, new Date(System.currentTimeMillis()));
+        createChat("Oleg", dummyPublicKey).addMessage("priv", false, new Date(System.currentTimeMillis()));
     }
 
 
@@ -115,9 +145,11 @@ public class Chat extends BaseObservable implements IUser {
         this.messages = messages;
     }
 
-    public void addMessage(String text, Boolean fromMe) {
-        messages.add(new Message(text, fromMe, id));
+    public Message addMessage(String text, Boolean fromMe, Date date) {
+        Message addedMessage = new Message(text, fromMe, id, date);
+        messages.add(addedMessage);
         Chat.notifyDataUpdate();
+        return addedMessage;
     }
 
     public Message getLastMessage() {
@@ -134,7 +166,7 @@ public class Chat extends BaseObservable implements IUser {
         chatsData.observe(lifecycleOwner, observer);
     }
 
-    public  static void removeChatsDataObserver(LifecycleOwner lifecycleOwner) {
+    public static void removeChatsDataObserver(LifecycleOwner lifecycleOwner) {
         chatsData.removeObservers(lifecycleOwner);
     }
 
@@ -174,5 +206,32 @@ public class Chat extends BaseObservable implements IUser {
     @Override
     public String getAvatar() {
         return null;
+    }
+
+    public static Integer getIdFromNickname(String nickname) {
+        if (nicknameToId.containsKey(nickname))
+            return nicknameToId.get(nickname);
+        return -10;
+    }
+
+    public static void saveChatsInJson() {
+        SharedPreferences sharedPreferences = LoginActivity.getContext()
+                .getSharedPreferences("dacos", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Chat.getChats());
+        editor.putString("chats", json);
+        editor.putInt("current_block", currentBlock);
+        Log.d("json", "saved : " + json);
+        editor.apply();
+    }
+
+    public byte[] getPublicKey() {
+        return publicKey;
+    }
+
+    public void deleteMessage(Message message) {
+        messages.remove(message);
+        notifyDataUpdate();
     }
 }

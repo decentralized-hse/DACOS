@@ -17,6 +17,8 @@ import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
+import com.teama.dacosclient.services.GetNewUsersService;
+import com.teama.dacosclient.services.LoadMessagesService;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -35,7 +37,12 @@ public class ChatsActivity extends AppCompatActivity
         loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
 
-        //Chat.generateDummyChats();
+        Intent loadMessagesService = new Intent(context, LoadMessagesService.class);
+        Intent getUsersService = new Intent(context, GetNewUsersService.class);
+
+        context.startService(loadMessagesService);
+        context.startService(getUsersService);
+        Chat.generateDummyChats();
 
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
         // unexpected crashes. In case of problems, check:
@@ -59,6 +66,7 @@ public class ChatsActivity extends AppCompatActivity
         String json = sharedPreferences.getString(
                 "chats",
                 gson.toJson(new ArrayList<Chat>())); // DefaultValue.
+        Chat.setCurrentBlock(sharedPreferences.getInt("current_block", 0));
         Log.i("", "loadSavedChatInstance: " + json);
         Type type = new TypeToken<ArrayList<Chat>>() {
         }.getType();
@@ -87,14 +95,7 @@ public class ChatsActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        SharedPreferences sharedPreferences = LoginActivity.getContext()
-                .getSharedPreferences("dacos", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(Chat.getChats());
-        editor.putString("chats", json);
-        Log.d("json", "saved : " + json);
-        editor.apply();
+        Chat.saveChatsInJson();
         super.onStop();
     }
 

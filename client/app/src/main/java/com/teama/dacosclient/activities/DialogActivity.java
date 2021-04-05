@@ -52,9 +52,10 @@ public class DialogActivity extends AppCompatActivity {
                 List<Message> updatedMessages = Chat.getChats().get(chatId).getMessages();
                 if (updatedMessages.size() == 0)
                     return;
-                if (adapter.getItemCount() - 1 < updatedMessages.size()) {
+                if (adapter.getItemCount() - 1< updatedMessages.size()) {
                     List<Message> toAdd = updatedMessages
-                            .subList(adapter.getItemCount() - 1, updatedMessages.size());
+                            .subList(Math.max(adapter.getItemCount() - 1, 0),
+                                    updatedMessages.size());
                     for (Message message : toAdd)
                         adapter.addToStart(message, true);
                 }

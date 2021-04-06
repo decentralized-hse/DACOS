@@ -41,17 +41,17 @@ def check_username(username, usertype):
     return False
 
 
-def write_log(request):
+def write_msg(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed('Invalid request type')
     if 'message' in request.POST:
         message = request.POST.get('message')
-        log = Block.objects.latest('block').block
+        last_block = Block.objects.latest('block').block
         id = Block.objects.latest('block').id
-        if len(log) == global_settings('BLOCK_SIZE'):
+        if len(last_block) >= global_settings('BLOCK_SIZE'):
             Block(block=[message]).save()
         else:
-            log.append(message)
+            last_block.append(message)
             Block.objects.filter(id=id).update(block=log)
         return HttpResponse('OK')
     else:

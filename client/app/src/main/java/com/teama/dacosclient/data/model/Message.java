@@ -85,23 +85,26 @@ public class Message implements IMessage {
     public static void parseMessage(String encodedMessage) {
         String decodedMessage;
         try {
+            Log.d("message", "parseMessage: " + encodedMessage );
             decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage,
                     new KeyPair(
                             Key.fromBytes(User.getInstance().getPublicKey()),
                             Key.fromBytes(User.getInstance().getPrivateKey())
                     )
             );
-        } catch (SodiumException e) {
+        } catch (SodiumException | NegativeArraySizeException e) {
             Log.e("LazySodium", "Error in decoding message" + e.getMessage());
             return;
         }
 
-        String[] message = decodedMessage.split("ʃ");
+        String[] message = decodedMessage.split(Pattern.quote("∫"));
         if (message.length != 3)
             return;
         int userId = Chat.getIdFromNickname(message[0]);
         if (userId == -10 || userId == -1)
             return;
+        // TODO: Checking if user id == -1 - message is self-directed, now it is prohibited,
+        //  maybe should be allowed.
         Date date;
         try {
             date = new Date(Long.parseLong(message[2]));
@@ -112,11 +115,11 @@ public class Message implements IMessage {
     }
 
     public static String encodeMessage(Message message, Chat chat) {
-        String fullMessage = chat.getName() + '∫' +
+        String fullMessage = User.getInstance().getUsername() + '∫' +
                 message.getText() + '∫' +
                 System.currentTimeMillis();
         try {
-            return sodium.cryptoBoxSealEasy(message.getText(), Key.fromBytes(chat.getPublicKey()));
+            return sodium.cryptoBoxSealEasy(fullMessage, Key.fromBytes(chat.getPublicKey()));
         } catch (SodiumException e) {
             // Shouldn't be called - all info should be proper.
             Log.e("encoding message", "Error message: " + e.getMessage());

@@ -18,6 +18,7 @@ import com.teama.dacosclient.activities.ChatsActivity;
 import com.teama.dacosclient.activities.LoginActivity;
 import com.teama.dacosclient.data.model.Chat;
 import com.teama.dacosclient.data.model.Message;
+import com.teama.dacosclient.data.model.User;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

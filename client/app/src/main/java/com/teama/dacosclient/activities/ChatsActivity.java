@@ -48,49 +48,6 @@ public class ChatsActivity extends AppCompatActivity
 
         Intent loadMessagesService = new Intent(context, LoadMessagesService.class);
         Intent getUsersService = new Intent(context, GetNewUsersService.class);
-        // Contingently this is test 1
-        {
-            // TODO: test if serialization works on current keygen or not.
-            KeyPairGenerator kpg = null;
-            KeyPair kp = null;
-            LazySodiumAndroid sodium = null;
-            try {
-                kpg = KeyPairGenerator.getInstance("RSA");
-                sodium = new LazySodiumAndroid(new SodiumAndroid());
-                kp = sodium.cryptoBoxKeypair();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                String encodedMessage = sodium.cryptoBoxSealEasy("text", kp.getPublicKey());
-                Log.d("encodedMessage", encodedMessage);
-                String decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage, kp);
-                Log.d("decodedMessage", decodedMessage);
-            } catch (SodiumException e) {
-                e.printStackTrace();
-            }
-        }
-        {
-            KeyPair kp = null;
-            LazySodiumAndroid sodium = null;
-            try {
-                sodium = new LazySodiumAndroid(new SodiumAndroid());
-                kp = sodium.cryptoBoxKeypair();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                String encodedMessage = sodium.cryptoBoxSealEasy("text",
-                        Key.fromBytes(User.getInstance().getPublicKey()));
-                Log.d("encoded from this user", encodedMessage);
-                String decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage,
-                        new KeyPair(Key.fromBytes(User.getInstance().getPublicKey()),
-                                Key.fromBytes(User.getInstance().getPrivateKey())));
-                Log.d("decoded from this user", decodedMessage);
-            } catch (SodiumException e) {
-                e.printStackTrace();
-            }
-        }
         context.startService(loadMessagesService);
         context.startService(getUsersService);
         Chat.generateDummyChats();

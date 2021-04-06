@@ -17,7 +17,9 @@ import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
 import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.SecretBox;
+import com.goterl.lazycode.lazysodium.utils.Key;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
+import com.teama.dacosclient.data.model.User;
 import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
@@ -67,10 +69,27 @@ public class ChatsActivity extends AppCompatActivity
             } catch (SodiumException e) {
                 e.printStackTrace();
             }
-
-
-            Gson gson = new Gson();
-
+        }
+        {
+            KeyPair kp = null;
+            LazySodiumAndroid sodium = null;
+            try {
+                sodium = new LazySodiumAndroid(new SodiumAndroid());
+                kp = sodium.cryptoBoxKeypair();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                String encodedMessage = sodium.cryptoBoxSealEasy("text",
+                        Key.fromBytes(User.getInstance().getPublicKey()));
+                Log.d("encoded from this user", encodedMessage);
+                String decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage,
+                        new KeyPair(Key.fromBytes(User.getInstance().getPublicKey()),
+                                Key.fromBytes(User.getInstance().getPrivateKey())));
+                Log.d("decoded from this user", decodedMessage);
+            } catch (SodiumException e) {
+                e.printStackTrace();
+            }
         }
         context.startService(loadMessagesService);
         context.startService(getUsersService);

@@ -97,12 +97,14 @@ public class Message implements IMessage {
             return;
         }
 
-        String[] message = decodedMessage.split("ʃ");
+        String[] message = decodedMessage.split(Pattern.quote("∫"));
         if (message.length != 3)
             return;
         int userId = Chat.getIdFromNickname(message[0]);
         if (userId == -10 || userId == -1)
             return;
+        // TODO: Checking if user id == -1 - message is self-directed, now it is prohibited,
+        //  maybe should be allowed.
         Date date;
         try {
             date = new Date(Long.parseLong(message[2]));
@@ -113,7 +115,7 @@ public class Message implements IMessage {
     }
 
     public static String encodeMessage(Message message, Chat chat) {
-        String fullMessage = chat.getName() + '∫' +
+        String fullMessage = User.getInstance().getUsername() + '∫' +
                 message.getText() + '∫' +
                 System.currentTimeMillis();
         try {

@@ -13,6 +13,11 @@ import android.widget.SearchView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
+import com.goterl.lazycode.lazysodium.SodiumAndroid;
+import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
+import com.goterl.lazycode.lazysodium.interfaces.SecretBox;
+import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
@@ -21,6 +26,8 @@ import com.teama.dacosclient.services.GetNewUsersService;
 import com.teama.dacosclient.services.LoadMessagesService;
 
 import java.lang.reflect.Type;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class ChatsActivity extends AppCompatActivity
@@ -39,7 +46,32 @@ public class ChatsActivity extends AppCompatActivity
 
         Intent loadMessagesService = new Intent(context, LoadMessagesService.class);
         Intent getUsersService = new Intent(context, GetNewUsersService.class);
+        // Contingently this is test 1
+        {
+            // TODO: test if serialization works on current keygen or not.
+            KeyPairGenerator kpg = null;
+            KeyPair kp = null;
+            LazySodiumAndroid sodium = null;
+            try {
+                kpg = KeyPairGenerator.getInstance("RSA");
+                sodium = new LazySodiumAndroid(new SodiumAndroid());
+                kp = sodium.cryptoBoxKeypair();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                String encodedMessage = sodium.cryptoBoxSealEasy("text", kp.getPublicKey());
+                Log.d("encodedMessage", encodedMessage);
+                String decodedMessage = sodium.cryptoBoxSealOpenEasy(encodedMessage, kp);
+                Log.d("decodedMessage", decodedMessage);
+            } catch (SodiumException e) {
+                e.printStackTrace();
+            }
 
+
+            Gson gson = new Gson();
+
+        }
         context.startService(loadMessagesService);
         context.startService(getUsersService);
         Chat.generateDummyChats();

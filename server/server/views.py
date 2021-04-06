@@ -52,7 +52,7 @@ def write_msg(request):
             Block(block=[message]).save()
         else:
             last_block.append(message)
-            Block.objects.filter(id=id).update(block=log)
+            Block.objects.filter(id=id).update(block=last_block)
         return HttpResponse('OK')
     else:
         return HttpResponseBadRequest('Not enough data')

@@ -32,7 +32,6 @@ public class Chat extends BaseObservable implements IUser {
 
     private final byte[] publicKey;
 
-    // TODO: observer on chatsData to see if there is chat added and it should be updated in HashMap.
     public static HashMap<String, Integer> nicknameToId;
 
     @NonNull

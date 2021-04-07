@@ -44,21 +44,17 @@ public class DialogActivity extends AppCompatActivity {
             // Empty image loader is required for MessagesListAdapter to work.
         };
         adapter = new MessagesListAdapter<>("-1", imageLoader);
-        // TODO: in case of any bugs check setMessageInputListener() - it hasn't been tested.
         setMessageInputListener();
-        Chat.observeChatsData(this, new Observer() {
-            @Override
-            public void onChanged(Object o) {
-                List<Message> updatedMessages = Chat.getChats().get(chatId).getMessages();
-                if (updatedMessages.size() == 0)
-                    return;
-                if (adapter.getItemCount() - 1< updatedMessages.size()) {
-                    List<Message> toAdd = updatedMessages
-                            .subList(Math.max(adapter.getItemCount() - 1, 0),
-                                    updatedMessages.size());
-                    for (Message message : toAdd)
-                        adapter.addToStart(message, true);
-                }
+        Chat.observeChatsData(this, o -> {
+            List<Message> updatedMessages = Chat.getChats().get(chatId).getMessages();
+            if (updatedMessages.size() == 0)
+                return;
+            if (adapter.getItemCount() - 1< updatedMessages.size()) {
+                List<Message> toAdd = updatedMessages
+                        .subList(Math.max(adapter.getItemCount() - 1, 0),
+                                updatedMessages.size());
+                for (Message message : toAdd)
+                    adapter.addToStart(message, true);
             }
         });
     }

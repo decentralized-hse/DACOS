@@ -29,7 +29,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
-// TODO: untested
 public class GetNewUsersService extends Service {
     public GetNewUsersService() {
     }

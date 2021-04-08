@@ -3,14 +3,21 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class PublicUser(models.Model):
-    username = models.CharField(max_length=50)
-    public_key = ArrayField(models.IntegerField())
+    username = models.CharField(help_text='Ник пользователя, дублирован в PrivateUser', max_length=50)
+    # TODO: Maybe should start containing public key as hex string, not as byte array.
+    public_key = ArrayField(models.IntegerField(),
+                            help_text='Публичный ключ пользователя, используется для шифрования сообщения конкретному'
+                                      ' пользователю. Применяется криптография на эллиптических кривых. Хранится в виде'
+                                      ' массива байт длинной 32.',)
 
 
 class PrivateUser(models.Model):
-    username = models.CharField('Ник пользователя', max_length=50)
-    password_hash = models.CharField('Хэш пароля пользователя', max_length=77)
+    username = models.CharField(help_text='Ник пользователя, дублирован в PublicUser', max_length=50)
+    password_hash = models.CharField(help_text='Хэш пароля пользователя для проверки авторизации', max_length=77)
 
 
 class Block(models.Model):
-    block = ArrayField(models.CharField(max_length=500), size=32)
+    block = ArrayField(models.CharField(max_length=500), size=32,
+                       help_text='Блоки зашифрованных сообщений, размер блока можно поменять в settings.py '
+                                 '(максимальный размер блока - 32).')
+

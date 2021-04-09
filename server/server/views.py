@@ -6,6 +6,9 @@ from ast import literal_eval
 from server.settings import *
 
 
+# TODO: Service crashes if there is no blocks at all and someone tries to read them.
+
+
 def register_user(request):
     """
     register user for both PrivateUser and PublicUser tables
@@ -43,7 +46,7 @@ def check_username(username, usertype):
 
 def write_msg(request):
     if request.method != 'POST':
-        return HttpResponseNotAllowed('Invalid request type')
+        return HttpResponseNotAllowed('Wrong request type')
     if 'message' in request.POST:
         message = request.POST.get('message')
         last_block = Block.objects.latest('block').block
@@ -73,8 +76,36 @@ def read_message(request):
 
 def get_users(request):
     if request.method != 'GET':
-        return HttpResponseBadRequest('Not enough data')
+        return HttpResponseBadRequest('Wrong request type')
     # all_users is list of tuples.
     all_users = list(PublicUser.objects.all().values_list('username', 'public_key'))
     return HttpResponse(simplejson.
                         dumps([{'username': user[0], 'public_key': user[1]} for user in all_users]))
+
+
+def add_blocks(request):
+    # TODO: untested!
+    if request.method != 'POST':
+        return HttpResponseBadRequest('Wrong request type')
+    new_blocks = request.POST.get('new_blocks')
+    if new_blocks is None or not isinstance(new_blocks, list) or len(new_blocks) == 0:
+        return HttpResponseBadRequest('Not enough data')
+    for block in new_blocks:
+        if not isinstance(block, list):
+            return HttpResponseBadRequest('Not enough data')
+        for item in block:
+            if not isinstance(item, int):
+                return HttpResponseBadRequest('Not enough data')
+        if len(block) != global_settings('BLOCK_SIZE'):
+            return HttpResponseBadRequest('Not enough data')
+    last_block = Block.objects.latest('block')
+    if len(last_block.block) >= global_settings('BLOCK_SIZE'):
+        for block in new_blocks:
+            Block(block=block).save()
+    else:
+        last_data = last_block.block
+        Block.objects.filter(id=last_block.id).update(block=new_blocks[0])
+        for block in new_blocks[1:]:
+            Block(block=block).save()
+        Block(block=last_data).save()
+    return HttpResponse('OK')

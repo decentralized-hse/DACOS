@@ -13,12 +13,14 @@ public class User {
 
     private String username;
     private String password;
-    // TODO: change format of containing keys to String (hex from byte[]) - REQUIRES CHANGES ON SERV    ER.
+    // TODO: change format of containing keys to String (hex from byte[])
+    //  REQUIRES CHANGES ON SERVER.
+
+    // TODO: contain private key and password not in plain json, but in Android keystore system.
     private byte[] privateKey;
     private byte[] publicKey;
 
     private static User instance;
-
     private User(String username, String password) {
         this.username = username;
         this.password = password;

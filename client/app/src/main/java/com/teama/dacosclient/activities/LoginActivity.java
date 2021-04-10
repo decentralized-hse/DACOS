@@ -36,16 +36,12 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
 
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
+        loginButton.setOnClickListener(v -> {
+            loadingProgressBar.setVisibility(View.VISIBLE);
 
-                loginRepository.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
-                loadingProgressBar.setVisibility(View.INVISIBLE);
-            }
-
+            loginRepository.login(usernameEditText.getText().toString(),
+                    passwordEditText.getText().toString());
+            loadingProgressBar.setVisibility(View.INVISIBLE);
         });
     }
 

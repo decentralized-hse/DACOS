@@ -111,6 +111,7 @@ public class Message implements IMessage {
         } catch (Exception e) {
             return;
         }
+        // TODO: It crashes because of order of downloading new messages and new users.
         Chat.getChats().get(userId).addMessage(message[1], false, date);
     }
 

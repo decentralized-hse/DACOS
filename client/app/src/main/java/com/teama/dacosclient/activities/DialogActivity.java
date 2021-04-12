@@ -69,12 +69,12 @@ public class DialogActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         Chat.removeChatsDataObserver(this);
         // TODO: probably not the best solution, but saving onstop of chats activity doesn't detect
         //  (obviously) current changes in dialog activity.
         Chat.saveChatsInJson();
-        super.onStop();
+        super.onPause();
     }
 
     private void setMessageInputListener() {

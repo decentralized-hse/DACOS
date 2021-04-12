@@ -77,7 +77,7 @@ public class GetNewUsersService extends Service {
                     // No internet connection.
                 }
             }
-        }, 0, 60 * 1000);// 1 minute.
+        }, 0, 10 * 1000); // 10 seconds.
     }
 
     // Naming in Response.class is bad because of purpose of mapping JSON to this class.

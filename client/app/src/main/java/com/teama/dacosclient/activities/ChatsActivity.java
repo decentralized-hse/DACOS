@@ -102,9 +102,9 @@ public class ChatsActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         Chat.saveChatsInJson();
-        super.onStop();
+        super.onPause();
     }
 
     @Override

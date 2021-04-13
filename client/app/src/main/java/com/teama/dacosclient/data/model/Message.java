@@ -120,11 +120,14 @@ public class Message implements IMessage {
                 message.getText() + '∫' +
                 System.currentTimeMillis();
         try {
+            // TODO: this throws exception in some cases - should work this out.
             return sodium.cryptoBoxSealEasy(fullMessage, Key.fromBytes(chat.getPublicKey()));
         } catch (SodiumException e) {
             // Shouldn't be called - all info should be proper.
+            Log.e("message text", fullMessage);
+            Log.e("public key", Key.fromBytes(chat.getPublicKey()).toString());
             Log.e("encoding message", "Error message: " + e.getMessage());
-            return null;
+            return "";
         }
     }
 }

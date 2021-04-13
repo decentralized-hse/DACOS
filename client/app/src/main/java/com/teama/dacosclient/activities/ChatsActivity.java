@@ -50,7 +50,7 @@ public class ChatsActivity extends AppCompatActivity
         Intent getUsersService = new Intent(context, GetNewUsersService.class);
         context.startService(loadMessagesService);
         context.startService(getUsersService);
-        Chat.generateDummyChats();
+        //Chat.generateDummyChats();
 
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
         // unexpected crashes. In case of problems, check:

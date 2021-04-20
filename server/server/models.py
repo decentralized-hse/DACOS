@@ -21,3 +21,6 @@ class Block(models.Model):
                        help_text='Блоки зашифрованных сообщений, размер блока можно поменять в settings.py '
                                  '(максимальный размер блока - 32).')
 
+
+class Server(models.Model):
+    url = models.CharField(help_text="Url + port сервера, на котором также запущен сервер DACOS.", max_length=100)

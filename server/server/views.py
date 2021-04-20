@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
-from .models import PublicUser, PrivateUser, Block
+from .models import PublicUser, PrivateUser, Block, Server
 import json as simplejson
 from ast import literal_eval
 from server.settings import *
@@ -109,3 +109,9 @@ def add_blocks(request):
             Block(block=block).save()
         Block(block=last_data).save()
     return HttpResponse('OK')
+
+
+def get_servers(request):
+    if request.method != 'GET':
+        return HttpResponseBadRequest('Wrong request type')
+    return JsonResponse({ 'servers': list(Server.objects.all().values_list('url', flat=True))}, safe=False)

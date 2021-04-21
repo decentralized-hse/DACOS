@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 public class GetSomethingFromServerService extends Service {
 
     private final Timer timer = new Timer();
+
+    // Repeat time in seconds.
     private final int repeatTime;
     private final String url;
     private final Executor executor;
@@ -52,19 +54,10 @@ public class GetSomethingFromServerService extends Service {
                 try {
                     RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
                     queue.start();
-                    Gson gson = new Gson();
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
                         if (response.equals("error"))
                             return;
-                        executor.execute();
-                        GetNewUsersService.GetUserResponse[] responseList =
-                                gson.fromJson(response, (Type) GetNewUsersService.GetUserResponse[].class);
-                        Set<String> usernameSet = Chat.getChats().stream().map(Chat::getUsername).collect(Collectors.toSet());
-                        for (GetNewUsersService.GetUserResponse object : responseList) {
-                            if (!usernameSet.contains(object.getUsername()))
-                                Chat.createChat(object.getUsername(),
-                                        object.getPublic_key());
-                        }
+                        executor.execute(response);
                     },
                             error -> {
                                 Log.d("response blocks", "error");
@@ -80,7 +73,7 @@ public class GetSomethingFromServerService extends Service {
     }
 
     public interface Executor {
-        public void execute();
+        public void execute(String response);
     }
 
 }

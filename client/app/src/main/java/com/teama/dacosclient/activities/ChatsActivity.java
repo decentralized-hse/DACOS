@@ -19,18 +19,23 @@ import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.SecretBox;
 import com.goterl.lazycode.lazysodium.utils.Key;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
+import com.teama.dacosclient.data.model.Message;
 import com.teama.dacosclient.data.model.User;
 import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
 import com.teama.dacosclient.services.GetNewUsersService;
+import com.teama.dacosclient.services.GetSomethingFromServerService;
 import com.teama.dacosclient.services.LoadMessagesService;
 
 import java.lang.reflect.Type;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ChatsActivity extends AppCompatActivity
         implements ChatRecyclerViewAdapter.OnChatListener {
@@ -45,10 +50,10 @@ public class ChatsActivity extends AppCompatActivity
         context = this;
         loadSavedChatInstance();
         setContentView(R.layout.activity_chats);
-
-        Intent loadMessagesService = new Intent(context, LoadMessagesService.class);
+        String serverUrl = getActivityContext()
+                .getResources().getString(R.string.server_host);
         Intent getUsersService = new Intent(context, GetNewUsersService.class);
-        context.startService(loadMessagesService);
+        context.startService(getLoadMessagesService(serverUrl));
         context.startService(getUsersService);
         //Chat.generateDummyChats();
 
@@ -116,5 +121,81 @@ public class ChatsActivity extends AppCompatActivity
 
     public static ChatsActivity getActivityContext() {
         return context;
+    }
+
+    private Intent getLoadMessagesService(String serverUrl) {
+        return new Intent(context, new GetSomethingFromServerService() {
+            @Override
+            public void execute(String response) {
+                Gson gson = new Gson();
+                GetUserResponse[] responseList =
+                        gson.fromJson(response, (Type) GetUserResponse[].class);
+                Set<String> usernameSet = Chat.getChats().stream().map(Chat::getUsername).collect(Collectors.toSet());
+                for (GetUserResponse object : responseList) {
+                    if (!usernameSet.contains(object.getUsername()))
+                        Chat.createChat(object.getUsername(),
+                                object.getPublic_key());
+                }
+            }
+
+            @Override
+            public String getUrl() {
+                return serverUrl + "get_users";
+            }
+
+            @Override
+            public Integer getRepeatTime() {
+                return 3;
+            }
+
+            class GetUserResponse {
+                private String username;
+                private byte[] public_key;
+
+                public String getUsername() {
+                    return username;
+                }
+
+                public void setUsername(String username) {
+                    this.username = username;
+                }
+
+                public byte[] getPublic_key() {
+                    return public_key;
+                }
+
+                public void setPublic_key(byte[] public_key) {
+                    this.public_key = public_key;
+                }
+
+                public GetUserResponse() {
+                }
+            }
+        }.getClass());
+    }
+
+    private Intent getNewUsersService(String serverUrl) {
+        return new Intent(context, new GetSomethingFromServerService() {
+            @Override
+            public void execute(String response) {
+                Gson gson = new Gson();
+                List<List<String>> responseList = gson.fromJson(response,
+                        new TypeToken<List<List<String>>>() {}.getType());
+                Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
+                for (List<String> list : responseList)
+                    for (String message : list)
+                        Message.parseMessage(message);
+            }
+
+            @Override
+            public String getUrl() {
+                return serverUrl + "read_message?block_number=" + Chat.getCurrentBlock();
+            }
+
+            @Override
+            public Integer getRepeatTime() {
+                return 10;
+            }
+        }.getClass());
     }
 }

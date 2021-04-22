@@ -23,21 +23,27 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
-public class GetSomethingFromServerService extends Service {
+public abstract class GetSomethingFromServerService extends Service {
 
     private final Timer timer = new Timer();
 
     // Repeat time in seconds.
     private final int repeatTime;
     private final String url;
-    private final Executor executor;
 
-    public GetSomethingFromServerService(int repeatTime, String url, Executor executor) {
-        this.repeatTime = repeatTime;
-        this.url = url;
-        this.executor = executor;
+    public GetSomethingFromServerService() {
+        repeatTime = getRepeatTime();
+        url = getUrl();
     }
 
+    public abstract void execute(String response);
+
+    public abstract String getUrl();
+
+    /**
+     * @return Repeat time in seconds.
+     */
+    public abstract Integer getRepeatTime();
 
     @Nullable
     @Override
@@ -57,7 +63,7 @@ public class GetSomethingFromServerService extends Service {
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
                         if (response.equals("error"))
                             return;
-                        executor.execute(response);
+                        execute(response);
                     },
                             error -> {
                                 Log.d("response blocks", "error");
@@ -71,9 +77,4 @@ public class GetSomethingFromServerService extends Service {
             }
         }, 0, repeatTime * 1000); // 10 seconds.
     }
-
-    public interface Executor {
-        public void execute(String response);
-    }
-
 }

@@ -2,7 +2,6 @@ package com.teama.dacosclient.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,25 +12,14 @@ import android.widget.SearchView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
-import com.goterl.lazycode.lazysodium.SodiumAndroid;
-import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
-import com.goterl.lazycode.lazysodium.interfaces.SecretBox;
-import com.goterl.lazycode.lazysodium.utils.Key;
-import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import com.teama.dacosclient.data.model.Message;
-import com.teama.dacosclient.data.model.User;
 import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
-import com.teama.dacosclient.services.GetNewUsersService;
 import com.teama.dacosclient.services.GetSomethingFromServerService;
-import com.teama.dacosclient.services.LoadMessagesService;
 
 import java.lang.reflect.Type;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -52,9 +40,8 @@ public class ChatsActivity extends AppCompatActivity
         setContentView(R.layout.activity_chats);
         String serverUrl = getActivityContext()
                 .getResources().getString(R.string.server_host);
-        Intent getUsersService = new Intent(context, GetNewUsersService.class);
         context.startService(getLoadMessagesService(serverUrl));
-        context.startService(getUsersService);
+        context.startService(getNewUsersService(serverUrl));
         //Chat.generateDummyChats();
 
         // Not sure if creating and saving fragment here is a great solution, may lead to potential

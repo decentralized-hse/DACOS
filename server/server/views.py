@@ -84,7 +84,7 @@ def get_users(request):
 
 
 def add_blocks(request):
-    # TODO: untested!
+    # TODO: untested and currently unused! So should be tested on adding client functionality
     if request.method != 'POST':
         return HttpResponseBadRequest('Wrong request type')
     new_blocks = request.POST.get('new_blocks')

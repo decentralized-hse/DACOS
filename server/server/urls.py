@@ -7,5 +7,6 @@ urlpatterns = [
     path('get_users', views.get_users),
     path('read_message', views.read_message),
     path('get_servers', views.get_servers),
-    path('get_key', views.get_public_key)
+    path('get_key', views.get_public_key),
+    path('add_server', views.add_server)
 ]

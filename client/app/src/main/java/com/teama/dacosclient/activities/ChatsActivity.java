@@ -185,4 +185,24 @@ public class ChatsActivity extends AppCompatActivity
             }
         }.getClass());
     }
+
+    // TODO: needs to be completed after creating servers structure on client side.
+    private Intent getNewServersService(String serviceUrl) {
+        return new Intent(context, new GetSomethingFromServerService() {
+            @Override
+            public void execute(String response) {
+                return;
+            }
+
+            @Override
+            public String getUrl() {
+                return serviceUrl + "get_servers";
+            }
+
+            @Override
+            public Integer getRepeatTime() {
+                return 60;
+            }
+        }.getClass());
+    }
 }

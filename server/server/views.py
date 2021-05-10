@@ -4,6 +4,7 @@ from .models import PublicUser, PrivateUser, Block, Server
 import json as simplejson
 from nacl.public import PrivateKey, SealedBox
 import os
+import requests
 from dotenv import load_dotenv
 from ast import literal_eval
 from server.settings import *
@@ -56,10 +57,10 @@ def write_msg(request):
         # Decrypting message:
         skey = PrivateKey(bytes.fromhex(os.getenv('PRIVATE_KEY')))
         unsealed_box = SealedBox(skey)
-        message = unsealed_box.decrypt(message)
-        # See if we should pass message ta another server
+        message = unsealed_box.decrypt(bytes.fromhex(message)).decode('utf-8')
+        # See if we should pass message to another server
         if "∫" == message[0]:
-            return send_further(request,message)
+            return send_further(request, message)
         last_block = Block.objects.latest('block').block
         id = Block.objects.latest('block').id
         if len(last_block) >= global_settings('BLOCK_SIZE'):
@@ -73,12 +74,16 @@ def write_msg(request):
 
 
 def send_further(request, message):
-    start = 0
-    for i in range(1,len(message)):
+    for i in range(1, len(message)):
         if message[i] == "∫":
             end = i
             break
-    
+    server_id = int(message[1:end])
+    server = Server.objects.filter(id=server_id)
+    if len(server) != 1:
+        return HttpResponseBadRequest(f'There is no such server id:{server_id}')
+    requests.post(server.url + '/write_msg', {'message': message[end + 1:]})
+    return HttpResponse('OK')
 
 
 def read_message(request):
@@ -135,6 +140,17 @@ def get_servers(request):
     if request.method != 'GET':
         return HttpResponseBadRequest('Wrong request type')
     return JsonResponse({'servers': list(Server.objects.all().values_list('url', flat=True))}, safe=False)
+
+
+def add_server(request):
+    if request.method != 'POST':
+        return HttpResponseBadRequest('Wrong request type')
+    if request.POST.get('url') is None:
+        return HttpResponseBadRequest('URL is undefined')
+    if len(Server.objects.filter(url=request.POST.get('url'))) != 0:
+        return HttpResponseBadRequest('There is already such server')
+    Server(url=request.POST.get('url')).save()
+    return HttpResponse('OK')
 
 
 def get_public_key(request):

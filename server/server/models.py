@@ -8,7 +8,7 @@ class PublicUser(models.Model):
     public_key = ArrayField(models.IntegerField(),
                             help_text='Публичный ключ пользователя, используется для шифрования сообщения конкретному'
                                       ' пользователю. Применяется криптография на эллиптических кривых. Хранится в виде'
-                                      ' массива байт длинной 32.',)
+                                      ' массива байт длинной 32.', )
 
 
 class PrivateUser(models.Model):

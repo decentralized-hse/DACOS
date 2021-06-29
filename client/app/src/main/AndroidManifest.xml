@@ -15,7 +15,11 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <service
-            android:name=".services.GetSomethingFromServerService"
+            android:name=".services.GetNewUsersService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".services.GetLoadMessagesService"
             android:enabled="true"
             android:exported="true" />
 

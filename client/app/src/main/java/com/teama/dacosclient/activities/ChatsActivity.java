@@ -17,6 +17,8 @@ import com.teama.dacosclient.fragments.ChatFragment;
 import com.teama.dacosclient.R;
 import com.teama.dacosclient.adapters.ChatRecyclerViewAdapter;
 import com.teama.dacosclient.data.model.Chat;
+import com.teama.dacosclient.services.GetLoadMessagesService;
+import com.teama.dacosclient.services.GetNewUsersService;
 import com.teama.dacosclient.services.GetSomethingFromServerService;
 
 import java.lang.reflect.Type;
@@ -40,8 +42,8 @@ public class ChatsActivity extends AppCompatActivity
         setContentView(R.layout.activity_chats);
         String serverUrl = getActivityContext()
                 .getResources().getString(R.string.server_host);
-        context.startService(getLoadMessagesService(serverUrl));
-        context.startService(getNewUsersService(serverUrl));
+        context.startService(new Intent(this, GetLoadMessagesService.class));
+        context.startService(new Intent(this, GetNewUsersService.class));
         //Chat.generateDummyChats();
 
         // Not sure if creating and saving fragment here is a great solution, may lead to potential
@@ -108,82 +110,6 @@ public class ChatsActivity extends AppCompatActivity
 
     public static ChatsActivity getActivityContext() {
         return context;
-    }
-
-    private Intent getNewUsersService(String serverUrl) {
-        return new Intent(context, new GetSomethingFromServerService() {
-            @Override
-            public void execute(String response) {
-                Gson gson = new Gson();
-                GetUserResponse[] responseList =
-                        gson.fromJson(response, (Type) GetUserResponse[].class);
-                Set<String> usernameSet = Chat.getChats().stream().map(Chat::getUsername).collect(Collectors.toSet());
-                for (GetUserResponse object : responseList) {
-                    if (!usernameSet.contains(object.getUsername()))
-                        Chat.createChat(object.getUsername(),
-                                object.getPublic_key());
-                }
-            }
-
-            @Override
-            public String getUrl() {
-                return serverUrl + "get_users";
-            }
-
-            @Override
-            public Integer getRepeatTime() {
-                return 3;
-            }
-
-            class GetUserResponse {
-                private String username;
-                private byte[] public_key;
-
-                public String getUsername() {
-                    return username;
-                }
-
-                public void setUsername(String username) {
-                    this.username = username;
-                }
-
-                public byte[] getPublic_key() {
-                    return public_key;
-                }
-
-                public void setPublic_key(byte[] public_key) {
-                    this.public_key = public_key;
-                }
-
-                public GetUserResponse() {
-                }
-            }
-        }.getClass());
-    }
-
-    private Intent getLoadMessagesService(String serverUrl) {
-        return new Intent(context, new GetSomethingFromServerService() {
-            @Override
-            public void execute(String response) {
-                Gson gson = new Gson();
-                List<List<String>> responseList = gson.fromJson(response,
-                        new TypeToken<List<List<String>>>() {}.getType());
-                Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
-                for (List<String> list : responseList)
-                    for (String message : list)
-                        Message.parseMessage(message);
-            }
-
-            @Override
-            public String getUrl() {
-                return serverUrl + "read_message?block_number=" + Chat.getCurrentBlock();
-            }
-
-            @Override
-            public Integer getRepeatTime() {
-                return 10;
-            }
-        }.getClass());
     }
 
     // TODO: needs to be completed after creating servers structure on client side.

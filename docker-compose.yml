@@ -1,17 +1,6 @@
 version: "3.9"
    
 services:
-  django_gunicorn:
-    build:
-      context: .
-    env_file:
-      - server/DACOS/.env
-    ports:
-      - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: always
   db:
     image: postgres
     volumes:
@@ -28,4 +17,16 @@ services:
     expose:
       - 5432
     restart: always
+  django_gunicorn:
+    build:
+      context: .
+    env_file:
+      - server/DACOS/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+  
     

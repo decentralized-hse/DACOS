@@ -110,7 +110,7 @@ public class ChatsActivity extends AppCompatActivity
         return context;
     }
 
-    private Intent getLoadMessagesService(String serverUrl) {
+    private Intent getNewUsersService(String serverUrl) {
         return new Intent(context, new GetSomethingFromServerService() {
             @Override
             public void execute(String response) {
@@ -161,7 +161,7 @@ public class ChatsActivity extends AppCompatActivity
         }.getClass());
     }
 
-    private Intent getNewUsersService(String serverUrl) {
+    private Intent getLoadMessagesService(String serverUrl) {
         return new Intent(context, new GetSomethingFromServerService() {
             @Override
             public void execute(String response) {

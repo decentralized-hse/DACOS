@@ -56,6 +56,7 @@ public class Chat extends BaseObservable implements IUser {
      */
     public static Chat createChat(String username, byte[] publicKey) {
         Chat chat = new Chat(username, publicKey);
+        nicknameToId.put(username, CHATS.size());
         CHATS.add(chat);
         chatsData.setValue(CHATS);
         return chat;

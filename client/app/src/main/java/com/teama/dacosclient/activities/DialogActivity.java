@@ -90,6 +90,7 @@ public class DialogActivity extends AppCompatActivity {
                     queue.start();
                     String url = ChatsActivity.getActivityContext()
                             .getResources().getString(R.string.server_host) + "write_msg";
+                    Log.e("message")
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                             response -> Log.d("Server", "message sended: " + response),
                             error -> {

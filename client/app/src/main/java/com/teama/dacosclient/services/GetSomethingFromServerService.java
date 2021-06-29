@@ -29,11 +29,9 @@ public abstract class GetSomethingFromServerService extends Service {
 
     // Repeat time in seconds.
     private final int repeatTime;
-    private final String url;
 
     public GetSomethingFromServerService() {
         repeatTime = getRepeatTime();
-        url = getUrl();
     }
 
     public abstract void execute(String response);
@@ -60,13 +58,13 @@ public abstract class GetSomethingFromServerService extends Service {
                 try {
                     RequestQueue queue = Volley.newRequestQueue(LoginActivity.getContext());
                     queue.start();
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, getUrl(), response -> {
                         if (response.equals("error"))
                             return;
                         execute(response);
                     },
                             error -> {
-                                Log.d("response blocks", "error");
+                                Log.d("something from server", "error");
                             });
                     // Add the request to the RequestQueue.
                     queue.add(stringRequest);
@@ -75,6 +73,6 @@ public abstract class GetSomethingFromServerService extends Service {
                     // No internet connection.
                 }
             }
-        }, 0, repeatTime * 1000); // 10 seconds.
+        }, 0, repeatTime * 1000); // repeatTime seconds.
     }
 }

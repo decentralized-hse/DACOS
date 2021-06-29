@@ -19,7 +19,6 @@ public class GetNewUsersService extends GetSomethingFromServerService{
                 gson.fromJson(response, (Type) GetUserResponse[].class);
         Set<String> usernameSet = Chat.getChats().stream().map(Chat::getUsername)
                 .collect(Collectors.toSet());
-        Log.d("Usernames", response);
         for (GetUserResponse object : responseList) {
             if (!usernameSet.contains(object.getUsername()))
                 Chat.createChat(object.getUsername(),

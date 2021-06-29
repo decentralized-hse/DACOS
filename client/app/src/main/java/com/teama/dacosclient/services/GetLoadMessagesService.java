@@ -1,5 +1,7 @@
 package com.teama.dacosclient.services;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.teama.dacosclient.R;
@@ -15,7 +17,9 @@ public class GetLoadMessagesService extends  GetSomethingFromServerService{
         Gson gson = new Gson();
         List<List<String>> responseList = gson.fromJson(response,
                 new TypeToken<List<List<String>>>() {}.getType());
+        Log.d("currentBlock", String.valueOf(Chat.getCurrentBlock()));
         Chat.setCurrentBlock(Chat.getCurrentBlock() + responseList.size());
+        Log.d("currentBlock", String.valueOf(responseList.size()));
         for (List<String> list : responseList)
             for (String message : list)
                 Message.parseMessage(message);
@@ -23,6 +27,9 @@ public class GetLoadMessagesService extends  GetSomethingFromServerService{
 
     @Override
     public String getUrl() {
+        Log.e("url", ChatsActivity.getActivityContext()
+                .getResources().getString(R.string.server_host)
+                + "read_message?block_number=" + Chat.getCurrentBlock());
         return ChatsActivity.getActivityContext()
                 .getResources().getString(R.string.server_host)
                 + "read_message?block_number=" + Chat.getCurrentBlock();

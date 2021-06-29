@@ -27,7 +27,7 @@ public class GetLoadMessagesService extends  GetSomethingFromServerService{
 
     @Override
     public String getUrl() {
-        Log.e("url", ChatsActivity.getActivityContext()
+        Log.d("url", ChatsActivity.getActivityContext()
                 .getResources().getString(R.string.server_host)
                 + "read_message?block_number=" + Chat.getCurrentBlock());
         return ChatsActivity.getActivityContext()

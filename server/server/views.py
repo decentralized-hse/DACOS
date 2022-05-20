@@ -32,21 +32,26 @@ else:
     requests.post(os.getenv('ADMIN_SERVER') + '/add_server', {'url': os.getenv('THIS_SERVER'),
                                                               'public_key': key.public_key})
 
+
 def register_user(request):
-    """
-    register user for both PrivateUser and PublicUser tables
-    """
     if request.method == 'POST' and 'username' in request.POST \
-            and 'password' in request.POST and 'publicKey' in request.POST:
-        public_key = simplejson.loads(request.POST['publicKey'])
-        if len(request.POST['username']) > 50:
-            return HttpResponseBadRequest('Username is too long - 50 symbols is limit.')
-        if check_username(request.POST['username']) or \
-                check_username(request.POST['username'], PublicUser):
+            and 'server' in request.POST and 'public_key' in request.POST:
+
+        if not valid_username(request.POST['username']):
             return HttpResponseBadRequest('Username is already in use.')
-        print(len(public_key))
-        if not isinstance(public_key, list) or len(public_key) != 32:
-            return HttpResponseBadRequest('Format of public key is bad.')
+        if server_exists(request.POST['server']):
+            user = PublicUser(username=request.POST['username'], public_key=request.POST['public_key'],
+                              register_server=request.POST['server'])
+            user.save()
+            # Registering user everywhere.
+            for server in Server.objects.all().iterator():
+                if server.url != os.getenv('THIS_SERVER'):
+                    requests.post(server.url + '/register_user', {'username': user.username,
+                                                                  'server': user.register_server,
+                                                                  'public_key': user.public_key})
+        else:
+            return HttpResponseBadRequest('No requested server.')
+
     else:
         return HttpResponseBadRequest('Bad request format.')
 
@@ -54,14 +59,17 @@ def register_user(request):
     return HttpResponse('OK')
 
 
-def check_username(username, usertype):
-    """
-    usertype is PublicUser or PrivateUser
-    returns True if table contains username
-    """
-    users = usertype.objects.values('username')
+def valid_username(username):
+    users = PublicUser.objects.values('username')
     for user in users:
         if username == user['username']:
+            return False
+    return True
+
+def server_exists(url):
+    servers = Server.objects.values('url')
+    for server in servers:
+        if url == server['url']:
             return True
     return False
 

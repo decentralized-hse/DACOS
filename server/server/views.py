@@ -54,8 +54,6 @@ def register_user(request):
 
     else:
         return HttpResponseBadRequest('Bad request format.')
-
-    PublicUser(username=request.POST['username'], public_key=public_key).save()
     return HttpResponse('OK')
 
 
@@ -65,6 +63,7 @@ def valid_username(username):
         if username == user['username']:
             return False
     return True
+
 
 def server_exists(url):
     servers = Server.objects.values('url')
@@ -127,10 +126,12 @@ def read_message(request):
 def get_users(request):
     if request.method != 'GET':
         return HttpResponseBadRequest('Wrong request type')
-    # all_users is list of tuples.
-    all_users = list(PublicUser.objects.all().values_list('username', 'public_key'))
-    return HttpResponse(simplejson.
-                        dumps([{'username': user[0], 'public_key': user[1]} for user in all_users]))
+    # Get all users in a list of dicts.
+    users_list = []
+    for user in PublicUser.objects.all().iterator():
+        users_list.append({'username': user.username, 'public_key': user.public_key,
+                           'register_server': user.register_server})
+    return JsonResponse({'users': users_list}, safe=False)
 
 
 def add_blocks(request):
@@ -181,14 +182,3 @@ def add_server(request):
         return HttpResponseBadRequest('There is already such server')
     Server(url=request.POST.get('url'), public_key=request.POST.get('public_key')).save()
     return HttpResponse('OK')
-
-
-def get_public_key(request):
-    """
-    Returns public key to client so it could pack msg
-    """
-    load_dotenv()
-    if request.method != 'GET':
-        return HttpResponseBadRequest('Wrong request type')
-    #skey = PrivateKey(bytes.fromhex(os.getenv('PRIVATE_KEY')))
-    #return JsonResponse({'pkey': bytes(skey.public_key).hex()})

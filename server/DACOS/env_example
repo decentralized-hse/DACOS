@@ -1,0 +1,9 @@
+SECRET_KEY=key_example
+PASSWORD=postgres
+HOST=db
+USER=postgres
+NAME=postgres
+PORT=8000
+THIS_SERVER=this_server_ip
+ADMIN_SERVER=admin_server_ip
+BLOCK_SIZE=32

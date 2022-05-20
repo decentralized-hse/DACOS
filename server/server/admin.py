@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import PublicUser, PrivateUser, Block
+from .models import PublicUser, EncodedMessage, Server, ServerKeys
 
 admin.site.register(PublicUser)
-admin.site.register(PrivateUser)
-admin.site.register(Block)
+admin.site.register(EncodedMessage)
+admin.site.register(Server)
+admin.site.register(ServerKeys)

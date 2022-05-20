@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 
 
 class PublicUser(models.Model):
@@ -12,12 +11,15 @@ class PublicUser(models.Model):
 
 
 class EncodedMessage(models.Model):
-    models.TextField('')
-    text = ArrayField(models.CharField(max_length=500), size=32,
-                      help_text='Текст зашифрованного сообщения.')
+    text = models.TextField(help_text='Текст зашифрованного сообщения.')
 
 
 class Server(models.Model):
     url = models.CharField(help_text="Url:port сервера, на котором также запущен сервер DACOS.", max_length=100)
     public_key = models.TextField(help_text='Публичный ключ сервера, используется для шифрования'
                                             ' сообщения для пересылки на сервер. Применяется RSA 2048')
+
+
+class ServerKeys(models.Model):
+    public_key = models.TextField(help_text='Публичный ключ сервера.')
+    private_key = models.TextField(help_text='Приватный ключ сервера.')

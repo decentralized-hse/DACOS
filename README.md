@@ -18,7 +18,26 @@ BLOCK_SIZE hyperparameter of your server. Means amount of messages stored in eac
 
 ### Start Nginx proxy
 
+Before start make sure you have installed docker successfully.
+
+In order to start the databse you should clone repository and launch this commands:
+
+```
+cd balancer
+docker build --tag 'balancer' .
+docker run --detach 'balancer'
+``` 
+
 ### Start Database
+
+Before start make sure you have installed docker successfully.
+
+In order to start the databse you should clone repository and launch this commands:
+
+```
+cd db
+docker compose up
+``` 
 
 ### Start server
 Before start make sure you have installed docker successfully.
@@ -26,7 +45,7 @@ Before start make sure you have installed docker successfully.
 In order to start the server after creating .env file you should clone repository and launch this commands:
 
 ```
-cd Server
+cd server
 docker compose up
 ``` 
 

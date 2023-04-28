@@ -2,7 +2,7 @@ import json
 
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
 from ..models import PublicUser, Server
-from utils import valid_username, server_exists
+from .utils import valid_username, server_exists
 import requests
 import os
 

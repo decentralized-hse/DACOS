@@ -1,12 +1,12 @@
 from django.urls import path
 
-from views import register_user
-from views import register_user_once
-from views import write_msg
-from views import get_users
-from views import read_message
-from views import get_servers
-from views import add_server
+from server.logic import register_user
+from server.logic import register_user_once
+from server.logic import write_msg
+from server.logic import get_users
+from server.logic import read_message
+from server.logic import get_servers
+from server.logic import add_server
 
 urlpatterns = [
     path('users/register', register_user.register_user),
@@ -15,5 +15,5 @@ urlpatterns = [
     path('users', get_users.get_users),
     path('messages/get', read_message.read_message),
     path('servers', get_servers.get_servers),
-    path('servers/add', add_server.add_server())
+    path('servers/add', add_server.add_server)
 ]

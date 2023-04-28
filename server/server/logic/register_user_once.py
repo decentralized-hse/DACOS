@@ -2,7 +2,7 @@ import json
 
 from django.http import HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest, JsonResponse
 from ..models import PublicUser
-from utils import valid_username, server_exists
+from .utils import valid_username, server_exists
 
 
 def register_user_once(request):

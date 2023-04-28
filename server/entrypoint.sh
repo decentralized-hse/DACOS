@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Apply database migrations"
-python3.9 manage.py makemigrations;
+python3.9 manage.py makemigrations admin auth contenttypes sessions server;
 echo "Made migrations"
 python3.9 manage.py migrate;
 echo "Migrated"

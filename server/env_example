@@ -1,0 +1,8 @@
+SECRET_KEY=x=-gle75-2twyv5#(atgumo5$fquyb354rsi^6g8fy3&9dy3rv
+PASSWORD=postgres
+HOST=host.docker.internal
+USER_DB=postgres
+NAME=postgres
+PORT=5440
+PRIVATE_KEY=bd38bf61c6911869c80ab05ebf6878eca70c23897cac3b4706768f50843061d6
+BLOCK_SIZE=32

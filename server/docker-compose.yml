@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  web:
+    container_name: django
+    build:
+      context: .
+    entrypoint: ["sh", "/app/entrypoint.sh"]
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/static
+      - media_volume:/app/media
+    networks:
+      - django-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/static
+      - media_volume:/app/media
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    networks:
+      - django-network
+
+networks:
+  django-network:
+
+volumes:
+  media_volume:
+  static_volume:

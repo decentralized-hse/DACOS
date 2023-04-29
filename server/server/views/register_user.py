@@ -6,6 +6,7 @@ from utils import valid_username, server_exists
 import requests
 import os
 
+
 # Переделать регистрацию потому что сейчас рекурсивно запускается.
 def register_user(request):
     content = request.body.decode('utf-8')

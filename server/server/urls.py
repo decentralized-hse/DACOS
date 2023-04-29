@@ -15,5 +15,5 @@ urlpatterns = [
     path('users', get_users.get_users),
     path('messages/get', read_message.read_message),
     path('servers', get_servers.get_servers),
-    path('servers/add', add_server.add_server())
+    path('servers/add', add_server.add_server)
 ]

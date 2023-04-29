@@ -3,7 +3,6 @@ import requests
 import rsa
 import os
 
-
 try:
     # Generate RSA if there is none.
     keys = list(ServerKeys.objects.all())

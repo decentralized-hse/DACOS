@@ -13,6 +13,8 @@ services:
       - media_volume:/app/media
     networks:
       - django-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   nginx:
     container_name: nginx

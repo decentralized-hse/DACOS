@@ -15,5 +15,5 @@ def add_server(request):
         return HttpResponseBadRequest('public_key is undefined')
     if len(Server.objects.filter(url=content['url'])) != 0:
         return HttpResponseBadRequest('There is already such server')
-    Server(url=request.POST.get('url'), public_key=content['public_key']).save()
+    Server(url=content.get('url'), public_key=content['public_key']).save()
     return HttpResponse('OK')
